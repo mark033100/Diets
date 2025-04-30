@@ -1,0 +1,15 @@
+.patientname {
+    font-weight: bold;
+    font-size: 20px;
+
+}
+
+.labelSmall {
+    font-size: 12px;
+}
+
+
+.panel_background {
+    background-color: #059669;
+    color: #C6CAC9
+}

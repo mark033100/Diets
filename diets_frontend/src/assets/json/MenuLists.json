@@ -1,0 +1,51 @@
+{
+    "DoctorDietMenu": [
+        {
+            "id": 0,
+            "name": "Diet Requirements",
+            "description": "This is a diet menu 1"
+        },
+        {
+            "id": 1,
+            "name": "Diet History",
+            "description": "This is a diet menu 2"
+        },
+        {
+            "id": 2,
+            "name": "Assessments",
+            "description": "This is a diet menu 3"
+        }
+    ],
+    "AdminMenuList": [
+        {
+            "label": "Home",
+            "items": [
+                {
+                    "label": "Dashboard",
+                    "icon": "healthicons:home",
+                    "to": "/"
+                }
+            ]
+        },
+        {
+            "label": "Services",
+            "items": [
+                {
+                    "label": "Users Settings",
+                    "icon": "healthicons:person",
+                    "to": "/"
+                },
+                {
+                    "label": "Doctor Settings",
+                    "icon": "healthicons:doctor",
+                    "to": "/"
+                },
+                {
+                    "label": "Diet Settings",
+                    "icon": "healthicons:ui-settings",
+                    "to": "/admin/diet-settings"
+                }
+            ]
+        }
+    ]
+}
