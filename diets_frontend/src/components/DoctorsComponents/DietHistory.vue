@@ -5,6 +5,7 @@ import { FilterMatchMode } from '@primevue/core/api';
 
 
 const selectedDietHistory = ref(null);
+const dietStatus = ref();
 const dialogVisible = ref(false);
 const props = defineProps({
   hpercode: {
@@ -38,6 +39,7 @@ const globalFilters = ref({
 const onRowSelect = (event) => {
   selectedDietHistory.value = event.data
   dialogVisible.value = true;
+  dietStatus.value = setInlineMessage(selectedDietHistory.value.dostatus);
 }
 
 onUnmounted(() => {
@@ -63,7 +65,9 @@ onUnmounted(() => {
         @rowClick="onRowSelect" 
         paginator 
         :rows="5" 
-        :rowsPerPageOptions="[5, 10, 20, 50]">
+        :rowsPerPageOptions="[5, 10, 20, 50]"
+        scrollable 
+        scrollHeight="350px">
         <template #header>
           <div class="flex justify-between">
             <h4 class="m-0">Diet History</h4>
@@ -103,85 +107,144 @@ onUnmounted(() => {
     </div>
 
 
-    <Dialog :visible="dialogVisible" :selection="selectedDietHistory" :style="{ width: '50vw' }" :draggable="false" :closable="false" :dismissableMask="true" :closeOnEscape="true" :blockScroll="true" modal class="p-fluid" position="bottomright" >
+    <Dialog :visible="dialogVisible" :selection="selectedDietHistory" :style="{ width: '60vw' }" :draggable="false" :closable="false" :dismissableMask="true" :closeOnEscape="true" :blockScroll="true" modal class="p-fluid" position="bottomright" >
       <template #header>
         <div class="flex justify-between w-full">
-          <h4 class="m-0">Diet History Details</h4>
-          <Button icon="pi pi-times" class="p-button-text" @click="dialogVisible = false" />
+          <span class="flex items-center gap-2">
+            <Icon name="fluent:history-32-filled" size="1.5em"/>
+            <h4 class="m-0">Diet History Details</h4>
+          </span>
+          
+          <Button icon="pi pi-times" rounded raised text severity="danger" @click="dialogVisible = false" />
         </div>
       </template>
       <div v-if="!selectedDietHistory">
         <p> No Diet History Data</p>
       </div>
-      <div v-else>
-        
-        <div>
-          {{ console.log('Data: ', selectedDietHistory)   }}
-          <p class="font-extrabold text-2xl "> {{ selectedDietHistory.dietname ? selectedDietHistory.dietname : '' }} <Tag :severity="setInlineMessage(selectedDietHistory.dostatus)?.severity" :value=" setInlineMessage(selectedDietHistory.dostatus)?.name" class=" align-top" /> </p>
-          <p class="font-bold"> {{ selectedDietHistory.dietgroup ? checkAcronym(selectedDietHistory.dietgroup) : 'group' }}</p>
-        </div>
-        <div class="flex gap-5">
-          <span class="font-bold text-orange-400 flex items-center gap-2"> <span> <Icon name="healthicons:calendar" size="1.5em" /> </span> {{ selectedDietHistory.dodate ? formatDate(selectedDietHistory.dodate) : '' }} </span> 
-          <p class="flex items-center text-surface-600 gap-2"> <span> <Icon name="healthicons:doctor-male" size="1.5em" /> </span> {{ selectedDietHistory.lname ? selectedDietHistory.lname : '' }}, {{ selectedDietHistory.fname ? selectedDietHistory.fname : '' }}</p>
-        </div>
+      <div class="history-layout-container" v-else>
 
+        <section>
+          <Tag :severity="dietStatus.severity" :value=" dietStatus.name" class=" align-top" />
+          <span class="font-bold text-xl"> 
+            {{ selectedDietHistory.dietgroup ? checkAcronym(selectedDietHistory.dietgroup) : '' }} - {{ selectedDietHistory.dietname ? selectedDietHistory.dietname : '' }} 
+          </span> 
+          <span> {{ selectedDietHistory.dodate ? formatDate(selectedDietHistory.dodate) : '' }} | {{ selectedDietHistory.lname ? selectedDietHistory.lname : '' }}, {{ selectedDietHistory.fname ? selectedDietHistory.fname : '' }} </span>
+        </section>
 
-        <div class="w-full flex justify-between gap-4 my-10">
-          <section class="w-full">
-            <div class="mt-5 text-sm">
-              <p class="font-extrabold text-surface-600 text-lg flex items-center"> <Icon name="healthicons:circle-small" size="1.5em" style="color: var(--primary-color)"  /> Feeding and Diet Requirements </p>
-              <div class="flex gap-10 ml-10">
-                <div class="text-surface-600" v-if="selectedDietHistory.dietgroup === 'E'">
-                  <p> <span class="font-bold"> Feeding Mode: </span>  {{ selectedDietHistory.feedingMode ? selectedDietHistory.feedingMode : 'None' }} </p>
-                  <p> <span class="font-bold"> Feeding Duration: </span> {{ selectedDietHistory.feedingDuration ? selectedDietHistory.feedingDuration : '0' }} hours</p>
-                  <p> <span class="font-bold"> Feeding Frequency: </span> {{ selectedDietHistory.feedingFrequency ? selectedDietHistory.feedingFrequency : '0' }}x a day</p>
-                </div>
-                <div class="text-surface-600">
-                  <p> <span class="font-bold"> Calories: </span> {{ selectedDietHistory.calories ? selectedDietHistory.calories : '0' }} kcal</p>
-                  <p v-if="selectedDietHistory.dietgroup === 'E' "> <span class="font-bold"> Volume: </span>{{ selectedDietHistory.volume ? selectedDietHistory.volume : '0' }} ml</p>
-                  <p v-if="selectedDietHistory.dietgroup === 'E'"> <span class="font-bold"> Dilution: </span>{{ selectedDietHistory.dilution ? selectedDietHistory.dilution : '0' }} kcal : 1ml</p>
-                </div>
+        <section>
+          <span class="label-title  "> Diet Requirements </span>
+          <div class="flex justify-between gap-4"> 
+            <div class="w-[50%]">
+              <div class="p-2 text-sm">
+                <p class="flex gap-4 items-center justify-between font-bold">
+                  <span> Calories: </span>
+                  <span> {{ selectedDietHistory.calories ? selectedDietHistory.calories : '0' }} kcal</span>
+                </p>
+                
+                <p class="font-bold"> Macronutrients</p>
+                <ul class="pl-8 flex flex-col gap-2">
+                  <li class="flex justify-between">
+                    <span>Protein: </span>
+                    <span class="font-bold"> {{ selectedDietHistory.protein? selectedDietHistory.protein : '0' }} g </span>
+                  </li>
+                  <li class="flex justify-between">
+                    <span>Carbohydrates: </span>
+                    <span class="font-bold"> {{ selectedDietHistory.carbohydrates? selectedDietHistory.carbohydrates : '0' }} g </span>
+                  </li>
+                  <li class="flex justify-between">
+                    <span>Fats: </span>
+                    <span class="font-bold"> {{ selectedDietHistory.fats? selectedDietHistory.fats : '0' }} g </span>
+                  </li>
+                  <li class="flex justify-between">
+                    <span>Fiber: </span>
+                    <span class="font-bold"> {{ selectedDietHistory.fiber? selectedDietHistory.fiber : '0' }} g </span>
+                  </li>
+                </ul>
               </div>
             </div>
-            <div class="mt-10 text-sm">
-              <p class="font-extrabold text-surface-600 text-lg flex items-center"> <Icon name="healthicons:circle-small" size="1.5em" style="color: var(--primary-color)"  />Diet Remarks</p>
-              <p class="ml-10 text-surface-600"> {{ selectedDietHistory.ordreas ? selectedDietHistory.ordreas : 'None' }}</p>
-            </div>
-            <div class="mt-10 text-sm">
-              <p class="font-extrabold text-surface-600 text-lg flex items-center"> <Icon name="healthicons:circle-small" size="1.5em" style="color: var(--primary-color)"  />  SNS </p>
-              <ul class="ml-10 text-surface-600 flex flex-col gap-2">
-                <li> <span class="font-bold"> Type: </span> {{ selectedDietHistory.onsName ? selectedDietHistory.onsName : '' }} {{ selectedDietHistory.onsName2 ? '& ' + selectedDietHistory.onsName2 : '' }}</li>
-                <li> <span class="font-bold"> Frequency: </span>{{ selectedDietHistory.onsFrequency ? selectedDietHistory.onsFrequency : '' }}</li>
-                <li> <span class="font-bold"> Description: </span> {{ selectedDietHistory.onsDescription ? selectedDietHistory.onsDescription : '' }}</li>
-              </ul>
-            </div>
-          </section>
 
-          <section>
-            <Divider layout="vertical" /> 
-          </section>
+            <Divider layout ="vertical" type="dashed"/>
 
-          <section class="w-1/2">
-            <div class="mt-5 text-sm">
-              <p class="font-extrabold text-surface-600 text-lg flex items-center"> <Icon name="healthicons:circle-small" size="1.5em" style="color: var(--primary-color)"  /> Diet Restrictions </p>
-              <ul class="ml-10 text-surface-600 flex flex-col gap-2"> 
-                <li> <span class="font-bold"> Food Precautions: </span>  {{ selectedDietHistory.precaution ? selectedDietHistory.precaution : 'None' }} </li>
-                <li> <span class="font-bold"> Food Allergies: </span>  {{ selectedDietHistory.category ? selectedDietHistory.category : 'None' }} </li>
-              </ul>
+            <div class="w-[50%]" v-if="selectedDietHistory.dietgroup === 'E'">
+              <div class=" flex-col gap-2">
+                <div class="p-2 text-sm w-full">
+                  <p class="font-bold"> Formula</p>
+                  <ul class="pl-4 flex flex-col gap-2">
+                    <li class="flex justify-between">
+                      <label>Calories: </label>
+                      <p class="font-bold"> {{ selectedDietHistory.calories? selectedDietHistory.calories : '0' }} kcal </p>
+                    </li>
+                    <li class="flex justify-between">
+                      <label>Dilution: </label>
+                      <p class="font-bold"> {{ selectedDietHistory.dilution? selectedDietHistory.dilution : '0' }} kcal : 1 ml</p>
+                    </li>
+                    <li class="flex justify-between">
+                      <label>Volume: </label>
+                      <p class="font-bold"> {{ selectedDietHistory.volume? selectedDietHistory.volume : '0' }} ml </p>
+                    </li>
+                  </ul>
+                </div>
+                <div class="p-2 text-sm w-full">
+                  <p class="font-bold"> Feeding Procedure</p>
+                  <ul class="pl-4 flex flex-col gap-2">
+                    <li class="flex justify-between">
+                      <label>Mode: </label>
+                      <p class="font-bold"> {{ selectedDietHistory.feedingMode ? selectedDietHistory.feedingMode : 'None' }} </p>
+                    </li>
+                    <li class="flex justify-between">
+                      <label>Duration: </label>
+                      <p class="font-bold"> {{ selectedDietHistory.duration? selectedDietHistory.duration : '0' }} hours</p>
+                    </li>
+                    <li class="flex justify-between">
+                      <label>Frequency: </label>
+                      <p class="font-bold"> {{ selectedDietHistory.frequency? selectedDietHistory.frequency : '0' }} times/day</p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
             </div>
+          </div>
+        </section>
 
-            <div class="mt-16 text-sm">
-              <p class="font-extrabold text-surface-600 text-lg flex items-center"> <Icon name="healthicons:circle-small" size="1.5em" style="color: var(--primary-color)"  /> Nutrients</p>
-              <ul class="ml-10 text-surface-600 flex flex-col gap-2">
-                <li class="m-0 p-0"> <span class="font-bold"> Protein: </span>  {{ selectedDietHistory.protein ? selectedDietHistory.protein : '0' }} g</li>
-                <li class="m-0 p-0"> <span class="font-bold"> Carbohydrates: </span>  {{ selectedDietHistory.carbohydrates ? selectedDietHistory.carbohydrates : '0' }} g</li>
-                <li class="m-0 p-0"> <span class="font-bold"> Fats: </span>  {{ selectedDietHistory.fats ? selectedDietHistory.fats : '0' }} g</li>
-                <li class="m-0 p-0"> <span class="font-bold"> Fiber: </span>  {{ selectedDietHistory.fiber ? selectedDietHistory.fiber : '0' }} g</li>
-                <li class="m-0 p-0"> <span class="font-bold"> Sodium: </span>  {{ selectedDietHistory.sodium ? selectedDietHistory.sodium : '0' }} g</li>
-              </ul>
+        <section>
+          <span class="label-title"> Diet Restrictions </span>
+          <div class="flex text-sm p-2">
+            <div class="w-1/2">
+              <label class="font-bold">Food Allergies: </label>
+              <p class="pl-4 mt-4"> {{ selectedDietHistory.category ? selectedDietHistory.category : 'None' }}</p>
             </div>
-          </section>
-        </div>
+            <div>
+              <label class="font-bold">Food Precautions: </label>
+              <p class="pl-4 mt-4"> {{ selectedDietHistory.precaution ? selectedDietHistory.precaution : 'None' }} </p>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <span class="label-title"> Special Nutrition Supplement (SNS) </span>
+          <div class="tex-center flex justify-between w-1/2 p-2">
+            <ul class="text-sm flex flex-col gap-2 font-bold">  
+              <li>Type: </li>
+              <li>Frequency:</li>
+              <li>Other Details:</li>
+            </ul>
+            <ul>
+              <li> {{ selectedDietHistory.onsName? selectedDietHistory.onsName : '' }}</li>
+              <li class="self-start justify-self-start">  {{ selectedDietHistory.onsFrequency? selectedDietHistory.onsFrequency : '' }}</li>
+              <li>  {{ selectedDietHistory.onsDescription? selectedDietHistory.onsDescription : '' }}</li>
+            </ul>
+              
+          </div>
+        </section>
+
+        <section>
+          <span class="label-title"> Diet Remarks </span>
+          <p class="text-sm p-2"> {{ selectedDietHistory.ordreas? selectedDietHistory.ordreas : '' }} </p>
+        </section>
+
+
+
       </div>
 
     </Dialog>
@@ -189,3 +252,32 @@ onUnmounted(() => {
 
   </div>
 </template>
+
+
+<style scoped>
+  .history-layout-container {
+
+    padding: 1 rem;
+
+    .history-layout-wrapper {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+      padding-top: 2rem;
+    }
+
+    .label-title {
+      font-weight: bold;
+      font-size: 1.2rem;
+      padding-top: 1rem;
+    }
+  }
+
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border-bottom: 1px dashed rgb(228, 227, 227);
+    padding-bottom: 1.5rem;
+  }
+</style>

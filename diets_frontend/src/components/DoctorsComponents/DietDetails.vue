@@ -24,30 +24,22 @@ const props = defineProps({
       </h5>
     </div>
 
-    <ul class="mt-6">
-      <li class="flex flex-col gap-0">
-        <span class="data-output-large"> 
-          {{  patientsDietResult.dietgroup ? checkAcronym(patientsDietResult.dietgroup) : '' }} -
-          {{ patientsDietResult.dietname ? patientsDietResult.dietname : 'No Diet' }}  
-          <Icon name="fluent:question-circle-16-filled" 
-            class="text-2xl bg-primary pb-8" 
-            v-tooltip.bottom="patientsDietResult.dietdesc ? patientsDietResult.dietdesc : '---'" 
-          />
-        </span>
-      </li>
-
-      <li>
-        <div class="flex">
-          <p class="border-r border-gray-200 pr-4"> Ordered Date: <span class="font-bold">{{ patientsDietResult.dodate ? formatDate(patientsDietResult.dodate) : '---' }}</span></p>
-          <p class="pl-4"> Ordered By: <span class="font-bold">{{ patientsDietResult.licno ? patientsDietResult.licno : '---' }}</span></p>
-        </div>
-
-
-        
-      </li>
-
-
-    </ul>
+    <span class="data-output-large"> 
+      {{  patientsDietResult.dietgroup ? checkAcronym(patientsDietResult.dietgroup) : '' }} -
+      {{ patientsDietResult.dietname ? patientsDietResult.dietname : 'No Diet' }}  
+      <Icon name="fluent:question-circle-16-filled" 
+        class="text-2xl bg-primary pb-8" 
+        v-tooltip.bottom="patientsDietResult.dietdesc ? patientsDietResult.dietdesc : '---'" 
+      />
+    </span>
+    <div class="flex">
+      <span class="border-r border-gray-200 pr-4"> Ordered Date:
+        <span class="font-bold">{{ patientsDietResult.dodate ? formatDate(patientsDietResult.dodate) : '---' }}</span>
+      </span>
+      <span class="pl-4"> Ordered By: 
+        <span class="font-bold">{{ patientsDietResult.licno ? patientsDietResult.licno : '---' }}</span>
+      </span>
+    </div>
 
     <Divider type="dashed"/>
     <h6 class="w-full font-bold text-xl">Diet Requirements</h6>

@@ -5,6 +5,7 @@ import errorInlineMessage from '~/components/customComponents/errors/errorInline
 import { useMyPatientDetailsStore } from '~/stores/patientDetails';
 
 const patientStore = useMyPatientDetailsStore();
+const nutritionScreeningDialog = ref(false);
 
 const props = defineProps({
   enccode: {
@@ -50,13 +51,21 @@ if ( apiStatus.value === 'success' ) {
       <div class="panel-header">
         <h5 class="wrapper"> 
           <Icon name="healthicons:weight" size="1.5em" class="icon"/> 
-          <span class="title"> BMI Details </span>
+          <span class="title"> Patient Nutrition </span>
         </h5>
       </div>
 
-      <label class="label-small"> Status</label>
-      <p class="data-output">{{ patientNutritionScreeningData[0]?.riskIndicator || ''}} </p>
-
+      <div class="flex justify-between">
+        <span>
+          <label class="label-small"> Nutrition Screening Result</label>
+          <p class="data-output">{{ patientNutritionScreeningData[0]?.riskIndicator || ''}} </p>
+        </span>
+        <!-- <span>
+          <Button severity="primary" text @click="nutritionScreeningDialog = true"> 
+            <span class="underline"> See Details </span>
+          </Button>
+        </span> -->
+      </div>
       
       <div class="mt-2 flex justify-between "> 
         <p class="flex flex-col">
@@ -84,6 +93,20 @@ if ( apiStatus.value === 'success' ) {
         </li>
       </ul>
     </div>
+
+    <Dialog v-model:visible="nutritionScreeningDialog" header="Nutrition Screening Details" :style="{width: '50vw'}" :modal="true" class="p-fluid">
+      <div class="flex flex-col gap-4">
+        <div class="flex justify-between">
+          <span class="font-bold"> BMI: </span>
+          <span class="font-bold"> {{ patientNutritionScreeningData[0]?.bmi || '---'}} </span>
+        </div>
+        <div class="flex justify-between">
+          <span class="font-bold"> Height: </span>
+          <span class="font-bold"> {{ patientNutritionScreeningData[0]?.height || '---'}} </span>
+        </div>
+        </div>
+    </Dialog>
+
   </div>
 </template>
 

@@ -8,7 +8,7 @@ export function filterByColumn(dataObject: any, columnName: string, filterString
   // Convert object to an array if necessary
   const dataArray = Array.isArray(dataObject) ? dataObject : Object.values(dataObject);
 
-  return dataObject.filter((item: any) => item[columnName] === filterString);
+  return dataArray.filter((item: any) => item[columnName] === filterString);
 
 }
 

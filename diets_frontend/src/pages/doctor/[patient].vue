@@ -20,8 +20,6 @@ const enccode = patient.split('+')[0];
 // Reactive state
 const patientsDietResult = ref(null);
 const maternalStatus = ref();
-const doctorsOrderToggle = ref(false);
-const onSubmitClicked = ref(false);
 
 
 // Fetch patient diet data on component mount
@@ -93,7 +91,7 @@ async function onSuccessSubmit() {
         <p class="text-xs">General Admission Data and Diet Data of the Patient.</p>
       </div>
       <div>
-        <Button style="margin-right: 10px;" @click="onSubmitClicked = true" >
+        <Button style="margin-right: 10px;" @click="toggleDietOrder = true" >
           <Icon name="fluent:add-circle-12-filled" size="1.5em"/>
           <label class="font-bold">Create New Diet Order</label>
         </Button>

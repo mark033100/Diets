@@ -278,16 +278,16 @@ onUnmounted(() => {
       <div class="doctors-main-form-container-1">
           <section>
             <label class="font-bold"> Reminders</label>
-            <ul class="flex flex-col gap-2" v-for="reminder in reminders">
+            <ul class="flex flex-col gap-2 mt-2" v-for="reminder in reminders">
               <li class="flex items-start gap-2">
                 <Icon name="ic:baseline-check" class="text-2xl bg-primary" />
-                <p class="text-sm text-gray-500"> {{ reminder }} </p>
+                <p class="text-sm"> {{ reminder }} </p>
               </li>
             </ul>
           </section>
           <section class="mt-5">
             <label class="font-bold mt-2"> Diet Order Cut Off Time</label>
-            <ul class="text-sm text-gray-500 flex flex-col gap-2 mt-2">
+            <ul class="text-sm flex flex-col gap-2 mt-2">
               <li class="flex items-center gap-2">
                 <Icon name="bi:cloud-sun-fill" class="text-2xl" />
                 <label> Breakfast: 5:00 AM </label>
@@ -587,72 +587,69 @@ onUnmounted(() => {
       </div>
     </div>
 
-
-      <Dialog
-        v-model:visible="toggleUseSavedDietOrder"
-        :draggable="false" 
-        :closable="true" 
-        :dismissableMask="true" 
-        :blockScroll="true"  
-        modal
-      >
-        <template #header>
-          <div class="w-full ">
-            <label class="font-bold text-xl">Use Saved?</label> 
-          </div>
-        </template>
-        <p>A previous file was saved due to unexpected closure. Do you wish to use it?</p>
-        <div class="flex justify-between items-center mt-10">
-          <Button severity="secondary" raised text @click="toggleDietOrder = false">
-            <Icon name="mdi:close" class="text-2xl text-red-500" />
-            <span class="text-sm font-bold" @click="clearSelectedStorage()"> Cancel </span>
-          </Button>
-          <Button severity="primary" raised @click="onClickSubmit">
-            <Icon name="mdi:content-save-move" class="text-2xl" />
-            <span class="text-sm font-bold"> Use Saved </span>
-          </Button>
+    <Dialog
+      v-model:visible="toggleUseSavedDietOrder"
+      :draggable="false" 
+      :closable="true" 
+      :dismissableMask="true" 
+      :blockScroll="true"  
+      modal
+    >
+      <template #header>
+        <div class="w-full ">
+          <label class="font-bold text-xl">Use Saved?</label> 
         </div>
-      </Dialog>
-      
-
-
-      <Dialog
-        v-model:visible="toggleDietOrder"
-        :draggable="false" 
-        :closable="true" 
-        :dismissableMask="true" 
-        :blockScroll="true"  
-        modal
-      >
-        <template #header>
-          <div class="w-full ">
-            <label class="font-bold text-xl">Save Entry as Draft?</label> 
-            <p> Saving this entry will save it as a draft and can be used later. </p>
-          </div>
-        </template>
-        <div class="w-full flex flex-col gap-2 mt-5">
-          <label class="font-bold"> Title </label>
-          <InputText v-model="draft.title" 
-            class="w-full" 
-            placeholder="Enter title for this draft."
-          />
-          <label class="font-bold mt-5"> Remarks </label>
-          <Textarea v-model="draft.remarks" 
-            class="w-full" 
-            placeholder="Enter remarks for this draft (optional)"
-          />
+      </template>
+      <p>A previous file was saved due to unexpected closure. Do you wish to use it?</p>
+      <div class="flex justify-between items-center mt-10">
+        <Button severity="secondary" raised text @click="toggleDietOrder = false">
+          <Icon name="mdi:close" class="text-2xl text-red-500" />
+          <span class="text-sm font-bold" @click="clearSelectedStorage()"> Cancel </span>
+        </Button>
+        <Button severity="primary" raised @click="onClickSubmit">
+          <Icon name="mdi:content-save-move" class="text-2xl" />
+          <span class="text-sm font-bold"> Use Saved </span>
+        </Button>
+      </div>
+    </Dialog>
+    
+    <Dialog
+      v-model:visible="toggleDietOrder"
+      :draggable="false" 
+      :closable="true" 
+      :dismissableMask="true" 
+      :blockScroll="true"  
+      modal
+    >
+      <template #header>
+        <div class="w-full ">
+          <label class="font-bold text-xl">Save Entry as Draft?</label> 
+          <p> Saving this entry will save it as a draft and can be used later. </p>
         </div>
-        <div class="flex justify-between items-center mt-10">
-          <Button severity="secondary" raised text @click="toggleDietOrder = false">
-            <Icon name="mdi:close" class="text-2xl text-red-500" />
-            <span class="text-sm font-bold" @click="toggleDietOrder = false"> Cancel </span>
-          </Button>
-          <Button severity="primary" raised @click="onClickSubmit">
-            <Icon name="mdi:content-save-move" class="text-2xl" />
-            <span class="text-sm font-bold"> Save Draft </span>
-          </Button>
-        </div>
-      </Dialog>
+      </template>
+      <div class="w-full flex flex-col gap-2 mt-5">
+        <label class="font-bold"> Title </label>
+        <InputText v-model="draft.title" 
+          class="w-full" 
+          placeholder="Enter title for this draft."
+        />
+        <label class="font-bold mt-5"> Remarks </label>
+        <Textarea v-model="draft.remarks" 
+          class="w-full" 
+          placeholder="Enter remarks for this draft (optional)"
+        />
+      </div>
+      <div class="flex justify-between items-center mt-10">
+        <Button severity="secondary" raised text @click="toggleDietOrder = false">
+          <Icon name="mdi:close" class="text-2xl text-red-500" />
+          <span class="text-sm font-bold" @click="toggleDietOrder = false"> Cancel </span>
+        </Button>
+        <Button severity="primary" raised @click="onClickSubmit">
+          <Icon name="mdi:content-save-move" class="text-2xl" />
+          <span class="text-sm font-bold"> Save Draft </span>
+        </Button>
+      </div>
+    </Dialog>
 
     
   

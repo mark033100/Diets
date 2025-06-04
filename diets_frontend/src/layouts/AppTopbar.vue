@@ -106,7 +106,7 @@ const toggleUserInfo = (event) => {
             </div>
         </div>
 
-        <Dialog v-model:visible="patientSearchModal" header="Patient Search" modal>
+        <Dialog v-model:visible="patientSearchModal" header="Patient Search" modal dismissableMask>
             <SearchPatients @close="patientSearchModal = false"/>
         </Dialog>
     </div>
