@@ -53,7 +53,17 @@ onUnmounted(() => {
       <errorInlineMessage :errorObject="setError()"/>
     </div>
     <div v-else>
-      <DataTable :selection="selectedDietHistory" :filters="globalFilters" :value="patientHistory" :globalFilterFields="['dodate', 'dietname', 'fname', 'lname']" tableStyle="min-width: 50rem"  :loading="status === 'pending'" selectionMode="single" @rowClick="onRowSelect">
+      <DataTable :selection="selectedDietHistory" 
+        :filters="globalFilters" 
+        :value="patientHistory" 
+        :globalFilterFields="['dodate', 'dietname', 'fname', 'lname']" 
+        tableStyle="min-width: 50rem"  
+        :loading="status === 'pending'" 
+        selectionMode="single" 
+        @rowClick="onRowSelect" 
+        paginator 
+        :rows="5" 
+        :rowsPerPageOptions="[5, 10, 20, 50]">
         <template #header>
           <div class="flex justify-between">
             <h4 class="m-0">Diet History</h4>
@@ -106,8 +116,9 @@ onUnmounted(() => {
       <div v-else>
         
         <div>
-          <p class="font-extrabold text-5xl text-primary-600 m-0"> {{ selectedDietHistory.dietname ? selectedDietHistory.dietname : '' }} <Tag :severity="setInlineMessage(selectedDietHistory.dostatus)?.severity" :value=" setInlineMessage(selectedDietHistory.dostatus)?.name" class=" align-top" /> </p>
-          <p class="font-bold text-2xl text-primary-600 m-0 "> {{ selectedDietHistory.dietgroup ? checkAcronym(selectedDietHistory.dietgroup) : 'group' }}</p>
+          {{ console.log('Data: ', selectedDietHistory)   }}
+          <p class="font-extrabold text-2xl "> {{ selectedDietHistory.dietname ? selectedDietHistory.dietname : '' }} <Tag :severity="setInlineMessage(selectedDietHistory.dostatus)?.severity" :value=" setInlineMessage(selectedDietHistory.dostatus)?.name" class=" align-top" /> </p>
+          <p class="font-bold"> {{ selectedDietHistory.dietgroup ? checkAcronym(selectedDietHistory.dietgroup) : 'group' }}</p>
         </div>
         <div class="flex gap-5">
           <span class="font-bold text-orange-400 flex items-center gap-2"> <span> <Icon name="healthicons:calendar" size="1.5em" /> </span> {{ selectedDietHistory.dodate ? formatDate(selectedDietHistory.dodate) : '' }} </span> 

@@ -1,0 +1,18 @@
+.panel-header {
+
+    .wrapper {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .title {
+        font-size: 1.3rem;
+        font-weight: bolder;
+    }
+
+    .icon {
+        color: color-mix(in srgb, var(--primary-color), black 20%);
+    }
+}

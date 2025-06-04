@@ -1,3 +1,352 @@
 {
-    "Oral Diet Types": []
+    "Snacktime": [
+        {
+            "name": "AM Snack",
+            "code": "AM"
+        },
+        {
+            "name": "PM Snack",
+            "code": "PM"
+        },
+        {
+            "name": "MN Snack",
+            "code": "MN"
+        }
+    ],
+    "mealGroup": [
+        {
+            "id": "1",
+            "name": "Oral"
+        },
+        {
+            "id": "2",
+            "name": "Enteral | Tubefeeding  + FTW"
+        }
+    ],
+    "routineTypes": [
+        {
+            "id": "19",
+            "name": "Full Diet",
+            "description": "Diet that does not include any dietary restrictions. It is formerly called as Diet as Tolerated (DAT)."
+        },
+        {
+            "id": "01",
+            "name": "Soft Diet",
+            "description": "Diet that consists of soft, easily digestible and low residue foods. It is usually prescribed to people with swallowing difficulty and also to those who can’t tolerate normally textured or highly seasoned foods.",
+            "subtypes": [
+                {
+                    "id": "42",
+                    "name": "Soft Cold",
+                    "description": "Consists of foods that are soft, well cooked and easy to chew and if necessary chopped, ground or minced"
+                },
+                {
+                    "id": "43",
+                    "name": "Mechanically Soft",
+                    "description": "Consists of soft and bland foods which have been allowed to cool such as plain ice cream, cold milk, iced tea, cold water, chilled soup, etc. This is given in short period of time. "
+                }
+            ]
+        },
+        {
+            "id": "46",
+            "name": "Therapeutic Diets",
+            "description": "a diet adapted or modified to suit specific disease conditions.  It is part of the treatment of a medical condition and are normally prescribed by a physician and planned by a dietitian"
+        },
+        {
+            "id": "18",
+            "name": "Clear Liquid",
+            "description": "Diet that consists of clear fluid and juices that provide little residue and are easily absorbed. Foods allowed include clear fat-free broth, strained fruit juices, tea, black coffee, salabat, plain gelatin, sugar, hard candies.        "
+        },
+        {
+            "id": "17",
+            "name": "General Liquid",
+            "description": "Diet that includes fluids and semi-solid foods that are liquid at body temperature. Food allowed include those included in the clear liquid diet plus strained meat and fish, soft cooked egg, vegetable purees and juices, strained lugao and oatmeal, plain ice cream, custard, milk and milk drinks."
+        },
+        {
+            "id": "16",
+            "name": "NPO + FTW",
+            "description": "To abstain patients from eating or drinking anything, usually before surgery, certain medical tests, or procedures. Food to Watcher is Given to Patients with NPO Diets"
+        }
+    ],
+    "therapeuticTypes": [
+        {
+            "id": "30",
+            "name": "Low Fiber",
+            "description": ""
+        },
+        {
+            "id": "05",
+            "name": "Low Fat",
+            "description": ""
+        },
+        {
+            "id": "40",
+            "name": "Low Salt Low Fat",
+            "description": "Diet limiting sodium intake to <2,000 mg per day and fats to 10 – 15% of the total calories "
+        },
+        {
+            "id": "06",
+            "name": "Low Protein",
+            "description": "Diet with protein allowance of 0.5 to 0.7 gram/kilogram/day or 30-40 grams/day"
+        },
+        {
+            "id": "12",
+            "name": "High Protein",
+            "description": "Diet with protein allowance of 1.5-2.0 grams/kilogram/day or 90-110 grams/day"
+        },
+        {
+            "id": "11",
+            "name": "High Fiber",
+            "description": "Normal diet with fiber increased to more than 10 grams daily. Diet providing about 20 to 35 grams or more of dietary fiber per day, or approximately 10 to 13 grams fiber/1000 kcal but not less than 20 grams/day"
+        },
+        {
+            "id": "09",
+            "name": "DM Diet",
+            "description": "Diet aims to control calories, carbohydrates, protein, and fat intake in balanced amounts to meet nutritional needs, control blood sugar levels, and control weight. "
+        },
+        {
+            "id": "25",
+            "name": "Vegetarian",
+            "description": "Plant-based meals consisting of a variety of whole grains, legumes, nuts, vegetables and fruits"
+        }
+    ],
+    "onsTypes": [
+        {
+            "id": "37",
+            "name": "Cancer Specific Formula",
+            "description": "Specialized formula and are designed to meet the specific nutrient needs of patients with CANCER patients"
+        },
+        {
+            "id": "36",
+            "name": "Diabetic Formula",
+            "description": "Specialized formula and are designed to meet the specific nutrient needs of patients with DIABETIC patients"
+        },
+        {
+            "id": "38",
+            "name": "Renal Specific Formula",
+            "description": "Specialized formula and are designed to meet the specific nutrient needs of patients with RENAL disease"
+        },
+        {
+            "id": "39",
+            "name": "Semi-elemental Formula",
+            "description": "Contain amino acids of varying length, simple carbohydrates, and MCTs. They are partially pre-digested but not fully pre-digested."
+        },
+        {
+            "id": "35",
+            "name": "Standard Polymeric Formula",
+            "description": "This is also called as standard formula which is provided to those who can digest and absorb nutrients without difficulties. "
+        },
+        {
+            "id": "44",
+            "name": "Modular Protein Formula",
+            "description": "It is created from individual macronutrient preparations called modules, are prepared for patients who require specific nutrient combinations to treat their illnesses and can meet all of a person’s nutrient needs"
+        },
+        {
+            "id": "29",
+            "name": "Therapeutic Milk (PEDIA)",
+            "description": "Intended for pediatric patients with severe acute malnutrition (SAM) in therapeutic feeding centers: F75 is only used in the initial phase of treatment (phase 1). F100 is used in the transition phase"
+        }
+    ],
+    "allergiesMenu": [
+        {
+            "id": "08",
+            "name": "No Known Allergy"
+        },
+        {
+            "id": "09",
+            "name": "Undetermined"
+        },
+        {
+            "id": "10",
+            "name": "With Food Allergy"
+        },
+        {
+            "id": "11",
+            "name": "Others"
+        }
+    ],
+    "allergiesSubmenu": [
+        {
+            "id": "01",
+            "name": "Chicken/Egg"
+        },
+        {
+            "id": "02",
+            "name": "Fish/Seafood"
+        },
+        {
+            "id": "03",
+            "name": "Nuts"
+        },
+        {
+            "id": "04",
+            "name": "Soya Products"
+        },
+        {
+            "id": "05",
+            "name": "Milk/Dairy Products"
+        },
+        {
+            "id": "06",
+            "name": "Spices"
+        },
+        {
+            "id": "07",
+            "name": "Pseudo-Allergen"
+        }
+    ],
+    "tubefeedingMeals": [
+        {
+            "id": "34",
+            "name": "Blenderized",
+            "description": "Mixture of blenderized food source, with or without addition of enteral formula. Its ingredients can be customized based on food intolerances and allergies of the patients."
+        },
+        {
+            "id": "37",
+            "name": "Cancer Specific Formula",
+            "description": "Specialized formula and are designed to meet the specific nutrient needs of patients with CANCER patients"
+        },
+        {
+            "id": "36",
+            "name": "Diabetic Formula",
+            "description": "Specialized formula and are designed to meet the specific nutrient needs of patients with DIABETIC patients"
+        },
+        {
+            "id": "38",
+            "name": "Renal Specific Formula",
+            "description": "Specialized formula and are designed to meet the specific nutrient needs of patients with RENAL disease"
+        },
+        {
+            "id": "39",
+            "name": "Semi-elemental Formula",
+            "description": "Contain amino acids of varying length, simple carbohydrates, and MCTs. They are partially pre-digested but not fully pre-digested."
+        },
+        {
+            "id": "35",
+            "name": "Standard Polymeric Formula",
+            "description": "This is also called as standard formula which is provided to those who can digest and absorb nutrients without difficulties."
+        },
+        {
+            "id": "45",
+            "name": "Therapeutic Milk (PEDIA)",
+            "description": "Intended for pediatric patients with severe acute malnutrition (SAM) in therapeutic feeding centers: F75 is only used in the initial phase of treatment (phase 1). F100 is used in the transition phase"
+        }
+    ],
+    "feedingMode": [
+        {
+            "id": "01",
+            "name": "Continuous",
+            "description": ""
+        },
+        {
+            "id": "02",
+            "name": "Intermittent",
+            "description": ""
+        },
+        {
+            "id": "03",
+            "name": "Bolus",
+            "description": ""
+        }
+    ],
+    "precautions": [
+        {
+            "id": "24",
+            "name": "No Pork",
+            "description": "Eliminating pork and pork products in the diet which may be due to religious practices and/or food preferences"
+        },
+        {
+            "id": "27",
+            "name": "No Red Meat",
+            "description": "Eliminating pork and beef in the diet "
+        },
+        {
+            "id": "28",
+            "name": "No Dark Colored Foods",
+            "description": "Eliminating all foods/drinks colored red, brown or black, red meat, spicy and oily, which may affect the color of the stools and the vomitus."
+        },
+        {
+            "id": "41",
+            "name": "G6PD Deficiency",
+            "description": "Diet eliminating fava beans, red wine, legumes (abitsuelas, garbanzos, kadyos, munggo), blueberry, soya food (taho, tokwa, soy sauce), tonic water and bitter melon/ampalaya in the diet"
+        },
+        {
+            "id": "10",
+            "name": "Hypo-allergenic",
+            "description": "Individualized diet based on the specific food allergies. Common allergens are chicken, egg, fish, seafood, nuts, soya products, milk/dairy products and spices such as celery, garlic, cinnamon, sesame, turmeric, onion, mustard, vanilla and black pepper "
+        },
+        {
+            "id": "58",
+            "name": "Strict Aspiration Precautions",
+            "description": ""
+        }
+    ],
+    "pediaAgeRange": [
+        {
+            "id": "05",
+            "name": "1-2 years",
+            "data": {
+                "kcal": 1000,
+                "protein": "15 %",
+                "carbohydrates": "55 %",
+                "fats": "30 %"
+            }
+        },
+        {
+            "id": "06",
+            "name": "3-5 years",
+            "data": {
+                "kcal": 1300,
+                "protein": "15 %",
+                "carbohydrates": "55 %",
+                "fats": "30 %"
+            }
+        },
+        {
+            "id": "07",
+            "name": "6-9 years",
+            "data": {
+                "kcal": 1500,
+                "protein": "15 %",
+                "carbohydrates": "55 %",
+                "fats": "30 %"
+            }
+        },
+        {
+            "id": "07",
+            "name": "10-12 years",
+            "data": {
+                "kcal": 2000,
+                "protein": "15 %",
+                "carbohydrates": "55 %",
+                "fats": "30 %"
+            }
+        },
+        {
+            "id": "08",
+            "name": "13-18 years",
+            "data": {
+                "kcal": 2500,
+                "protein": "15 %",
+                "carbohydrates": "55 %",
+                "fats": "30 %"
+            }
+        }
+    ],
+    "reproduciveStatus": [
+        {
+            "id": "0",
+            "name": "Pregnant",
+            "description": ""
+        },
+        {
+            "id": "1",
+            "name": "Lactating",
+            "description": ""
+        },
+        {
+            "id": "2",
+            "name": "Not Applicable",
+            "description": ""
+        }
+    ]
 }

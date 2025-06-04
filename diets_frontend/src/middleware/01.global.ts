@@ -1,13 +1,11 @@
 import { useAuth } from '~/composables/authentication/useAuth';
 
-
 export default defineNuxtRouteMiddleware(async (to, from) => {
 
     const grantAllAccess = true;
     if (grantAllAccess) {
         return
     }
-
     interface interface_userAuth {
         data: {
             user_level: keyof typeof allowedPages

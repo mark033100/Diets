@@ -1,19 +1,34 @@
 {
     "DoctorDietMenu": [
         {
-            "id": 0,
-            "name": "Diet Requirements",
-            "description": "This is a diet menu 1"
+            "label": "Home",
+            "items": [
+                {
+                    "label": "Dashboard",
+                    "icon": "healthicons:home",
+                    "to": "/"
+                }
+            ]
         },
         {
-            "id": 1,
-            "name": "Diet History",
-            "description": "This is a diet menu 2"
-        },
-        {
-            "id": 2,
-            "name": "Assessments",
-            "description": "This is a diet menu 3"
+            "label": "Services",
+            "items": [
+                {
+                    "label": "Patient Search",
+                    "icon": "ic:sharp-person-search",
+                    "to": "/doctor/search-patient"
+                },
+                {
+                    "label": "Doctor's Orders",
+                    "icon": "healthicons:doctor",
+                    "to": "/"
+                },
+                {
+                    "label": "Assessments",
+                    "icon": "healthicons:ui-settings",
+                    "to": "/admin/diet-settings"
+                }
+            ]
         }
     ],
     "AdminMenuList": [

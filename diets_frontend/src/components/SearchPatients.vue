@@ -1,6 +1,5 @@
 <script setup>
 import { FilterMatchMode, FilterOperator  } from '@primevue/core/api';
-import { useFormatFunctions } from '~/composables/formatting/formatFunctions.ts';
 import { useFetchWardTypes } from '~/composables/fetch-data/fetch-wardTypes';
 import { useFetchDietTypes } from '~/composables/fetch-data/fetch-dietTypes';
 import { useFetchAllergiesandprecautions } from '~/composables/fetch-data/fetch-allergiesandprecautions';
@@ -8,7 +7,6 @@ import { useFetchPatientSearchList } from '~/composables/fetch-data/fetch-patien
 import Loader_Egg from '~/components/misc/loaders/Loader_Egg.vue';
 
 
-const { formatNullDiets, formatDate } = useFormatFunctions();
 const toast = useToast();
 
 const patients = ref([]);
@@ -154,12 +152,7 @@ const openPatientDetails = (patient) => {
 
 <template>
   <div>
-
       <Panel>
-        <h2> Search Patient</h2>
-        <Divider align="center" type="dotted">
-            <b>Filters</b>
-        </Divider>
         <div class="flex justify-between w-full ">
           <FloatLabel variant="on" class="w-full h-full">
             <DatePicker showButtonBar showIcon iconDisplay="input" v-model="filterObject.admission_date" dateFormat="m/dd/yy" mask="99/99/9999" id="on_calendar"/>
@@ -289,21 +282,21 @@ const openPatientDetails = (patient) => {
 
     <div class="container mx-auto p-4">
         <DataTable :value="filteredPatients" 
-            tableStyle="min-width: 40rem" 
+            tableStyle="width: 80rem" 
             stripedRows 
             :rowHover="true"
             removableSort
-            paginator :rows="10" :pageLinkSize="3"
+            paginator :rows="8" :pageLinkSize="3"
             pt:root:class="text-xs sm:text-xs md:text-sm lg:text-md"
             responsiveLayout="stack"
             pt:paginator:root:class="rounded-none"
             dataKey="id"
-            :rowsPerPageOptions="[10, 20, 50, 100]"
+            :rowsPerPageOptions="[8, 10, 50, 100]"
             paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
             currentPageReportTemplate="{first} to {last} of {totalRecords}"
             :loading="loading"
             scrollable 
-            scrollHeight="520px"
+            scrollHeight="450px"
             >
             <template #loading>
                 <div class="flex justify-center" v-if="loading">
@@ -313,11 +306,6 @@ const openPatientDetails = (patient) => {
             <template #empty>
                 <span class="flex justify-center text-2xl " v-if="loading">Loading Data.</span>
                 <span class="flex justify-center" v-else>No patient found.</span>
-            </template>
-            <template #header>
-              <div class="p-4">
-                <p class="font-bold text-3xl">Admitted Patients</p>
-              </div>
             </template>
             
             <Divider />
@@ -362,7 +350,7 @@ const openPatientDetails = (patient) => {
 
                 <Column headerClass="" bodyClass="pl-0 pr-10" style="width: 5%">
                     <template #body="patients">
-                        <NuxtLink :to="'/doctor/' + patients.data.enccode + '+' + patients.data.hpercode"  @click="($emit('showPatient'), $event.preventDefault())">
+                        <NuxtLink :to="'/doctor/' + patients.data.enccode + '+' + patients.data.hpercode"  @click="($emit('close'), $event.preventDefault())">
                             <i class="pi pi-external-link animate-bounce hover:animate-none hover:scale-125" style="font-size: 1.5rem; color:mediumaquamarine"></i>
                         </NuxtLink>
                     </template>

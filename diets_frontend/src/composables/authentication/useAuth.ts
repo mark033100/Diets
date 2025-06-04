@@ -1,6 +1,6 @@
 interface LoginResponse {
   user: any;
-  token: any;
+  token: string;
 }
 
 export const useAuth = () => {
@@ -73,7 +73,7 @@ export const useAuth = () => {
   };
 
 
-  const fetchUser = async () => {
+  const fetchUserDetails = async () => {
 
     try {
 
@@ -108,5 +108,5 @@ export const useAuth = () => {
 
   }
 
-  return { user, login, logout, fetchUser };
+  return { user, login, logout, fetchUserDetails };
 };

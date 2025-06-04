@@ -1,99 +1,661 @@
 <script lang="ts" setup>
+import DietTypes from '~/assets/json/DietTypes.json';
+import custom_button from '~/components/customComponents/buttons/custom_button_icon.vue';
+import { useDoctorsOrderValidation } from '~/composables/validations/doctorsOrderValidation';
+import type { doctorsOrdeInputInterface, validationResult, cookieUserInterface } from '@/types/objectTypes';
+
+const props = defineProps({
+  age: {
+    type: String,
+    required: true
+  },
+  gender: {
+    type: String,
+    required: true
+  },
+  hpercode: {
+    type: String,
+    required: true
+  },
+  enccode: {
+    type: String,
+    required: true
+  },
+  dietcode: {
+    type: String,
+    required: false
+  }
+});
+
+const reminders = ref([
+  "Please fill in all required fields.",
+  "You may save the form as a draft for future use.",
+  "Review the Cut off time for issuing diet orders.",
+]);
+
+const emit = defineEmits(['closeDialog', 'success']);
+
+const LOCAL_STORAGE_KEY = 'diet-form';
+const toast = useToast();
+const patient_age = props.age ? Number(props.age) : 0;
+const authUserCookie = useCookie<cookieUserInterface>('authUser');
+const toggleDietOrder = ref(false);
+const toggleUseSavedDietOrder = ref(false);
+
+const draft = reactive({
+  title: '',
+  remarks: ''
+});
+
+const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+const initialData  = savedData ? JSON.parse(savedData) : {
+  dietCategory: '1',
+  dietType1: null,
+  dietType2: null,
+  dietCalories: null,
+  dietVolume: null,
+  dietDilution: '1',
+  nutrientsProtein: null,
+  nutrientsCarbohydrates: null,
+  nutrientsFat: null,
+  nutrientsFiber: null,
+  feedingMode: null,
+  feedingDuration: null,
+  feedingFrequency: null,
+  allergyType: null,
+  allergySubtype: null,
+  precautions: null,
+  snsType: null,
+  snsFrequency: null,
+  snsDescription: null,
+  remarks: null,
+};
+const selected = reactive(initialData);
+
+const debouncedSave = useDebounceFn(() => {
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ ...selected }));
+}, 5000);
+
+watch (() => ({ ...selected }), debouncedSave, { deep: true });
 
 
-const selectedDietCategory = ref('Oral');
+// Rendering condition values
+const show_Add_SubDietType_Input = ref(false);
+const show_Add_Therapeutic_Input = ref(false);
+const show_Add_DietType_Button = ref(false);
+const show_as_Enteral = computed(() => selected.dietCategory === '2' ? true : false);
 
+// Input Invalid Validation condition values
+const isDietType1Required = computed(() => selected.dietType1 === null);
+const isDietType2Required = computed(() => selected.dietType1 === '46' && selected.dietType2 === null);
+const isDietCaloriesRequired = computed(() => selected.dietCalories === null);
+const isDietDilutionRequired = computed(() => selected.dietCategory === '2' && selected.dietDilution === null);
+const isNutrientsProteinRequired = computed(() => patient_age > 18 && selected.nutrientsProtein === null);
+const isNutrientsCarbsRequired = computed(() => patient_age > 18 && selected.nutrientsCarbohydrates === null);
+const isNutrientsFatRequired = computed(() => patient_age > 18 && selected.nutrientsFat === null);
+const isFeedingModeRequired = computed(() => selected.feedingMode === null);
+const isFeedingDurationRequired = computed(() => selected.feedingDuration === null);
+const isFeedingFrequencyRequired = computed(() => selected.feedingFrequency === null);
+const isAllergyTypeRequired = computed(() => selected.allergyType === null);
+const isAllergySubtypeRequired = computed(() => selected.allergySubtype === null);
+const isSnsFrequencyRequired = computed(() => selected.snsType && selected.snsFrequency === null);
+const isSnsDescriptionRequired = computed(() => selected.snsType && selected.snsDescription === null);
+
+// Component Functions
+const onClickedAddDietType = () => {
+  show_Add_SubDietType_Input.value = !show_Add_SubDietType_Input.value;
+  selected.dietType2= null;
+} 
+
+const onAllergyChange = () => { 
+  selected.allergySubtype = null;
+}
+
+const onDietType1Change = () => { 
+  show_Add_DietType_Button.value = false;
+  show_Add_Therapeutic_Input.value = false;
+  show_Add_SubDietType_Input.value = false;
+  selected.dietType2= null;
+
+  if(selected.dietType1 === '01') { 
+    show_Add_DietType_Button.value = !show_Add_DietType_Button.value;
+  }
+
+  if(selected.dietType1 === '46') { 
+    show_Add_Therapeutic_Input.value = !show_Add_Therapeutic_Input.value;
+  }
+
+}
+
+const onClickSubmit = () => { 
+
+  const inputs = <doctorsOrdeInputInterface>{ ...selected, age: props.age, gender: props.gender };
+  
+  const { isValid, errors } = useDoctorsOrderValidation(inputs);
+  
+  if (isValid) {
+
+    submitForm();
+
+  } else {
+
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Please fill in all required fields.',
+      life: 3000
+    });
+    console.log(errors);
+  }
+}
+
+const onClickCancel = () => { 
+  clearSelectedStorage();
+  emit('closeDialog');
+}
+
+const submitForm = async () => {
+
+  try { 
+    const data = await $fetch('/api/doctors-api/doctor_submitForm', {
+      method: 'POST',
+      body: {
+        ...selected,
+        docId: authUserCookie.value.employeeid,
+        hpercode: props.hpercode,
+        enccode: props.enccode,
+        age: props.age,
+        gender: props.gender,
+        previousDietcode: props.dietcode || null
+      }
+    });
+
+    toast.add({
+      severity: 'success',
+      summary: 'Diet Order Created',
+      detail: 'Diet Order has been successfully created.',
+      life: 3000
+    });
+
+    clearSelectedStorage();
+    emit('success');
+
+  } catch (error: any) {
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: error.data.data.error_message,
+      life: 3000
+    });
+    return;
+  }
+
+
+}
+
+const clearSelectedStorage = () => { 
+  localStorage.removeItem(LOCAL_STORAGE_KEY);
+}
+
+const onClickClearForm = () => { 
+  clearSelectedStorage();
+  selected.dietCategory = '1';
+  selected.dietType1 = null;
+  selected.dietType2 = null;
+  selected.dietCalories = null;
+  selected.dietVolume = null;
+  selected.dietDilution = '1';
+  selected.nutrientsProtein = null;
+  selected.nutrientsCarbohydrates = null;
+  selected.nutrientsFat = null;
+  selected.nutrientsFiber = null;
+  selected.feedingMode = null;
+  selected.feedingDuration = null;
+  selected.feedingFrequency = null;
+  selected.allergyType = null;
+  selected.allergySubtype = null;
+  selected.precautions = null;
+  selected.snsType = null;
+  selected.snsFrequency = null;
+  selected.snsDescription = null;
+  selected.remarks = '';
+}
+
+const computeNutrients = () => {
+
+  const age = Number(props.age);
+
+  if (age && age < 19) {
+      let calories, carbohydrates, protein, fats;
+
+      if (age >= 1 && age <= 2) {
+          calories = 1000;
+      } else if (age >= 3 && age <= 5) {
+          calories = 1300;
+      } else if (age >= 6 && age <= 9) {
+          calories = 1500;
+      } else if (age >= 10 && age <= 12) {
+          calories = 2000;
+      } else if (age >= 13 && age <= 18) {
+          calories = 2600;
+      }
+
+      if (calories) {
+          carbohydrates = Math.round((calories * 0.55) / 4); 
+          protein = Math.round((calories * 0.15) / 4);       
+          fats = Math.round((calories * 0.30) / 9);          
+
+          selected.dietCalories = calories;
+          selected.nutrientsCarbohydrates = carbohydrates;
+          selected.nutrientsProtein = protein;
+          selected.nutrientsFat = fats;
+          selected.age = 18; 
+      }
+  }
+}
+
+const isSavedAvailable = () => {
+  if (savedData) {
+    toggleUseSavedDietOrder.value = true;
+  }
+}
+
+onMounted(() => { 
+  computeNutrients();
+  isSavedAvailable();
+})
+
+onUnmounted(() => {
+  clearSelectedStorage();
+})
 
 </script>
-
-
 <template>
-  <div class="w-full">
-    <div class="p-4">
-      <div class="flex gap-4 ">
-        <div class="w-1/4">
-          <label> Reminders</label>
-        </div>
-        <div class="w-full">
+  <div class="w-full ">
 
-          <label class="font-bold">Diet Category</label>
-          <ul class="flex gap-10 ml-10 mt-2">
-            <li class="flex items-center gap-5">
-              <RadioButton v-model="selectedDietCategory" name="Oral" value="Oral" inputId="oral" /> <label for="oral"> Oral </label> 
-            </li>
-            <li class="flex items-center gap-5">
-              <RadioButton v-model="selectedDietCategory" name="Enteral" value="Enteral" inputId="enteral" /> <label for="enteral"> Enteral </label>
-            </li>
-          </ul>
-
-          <div class="mt-5 flex flex-col gap-5">
-            <label class="font-bold">Diet Type</label>
-            <Select class="w-90% ml-10" placeholder="Select Diet Type"/>
-          </div>
-
-
-          <div class="mt-5">
-            <label class="font-bold"> Diet Requirements</label>
-            <div class="flex gap-10 ml-10">
-              <ul class="flex flex-col gap-2 mt-2">
-                <li> <IftaLabel> <InputText id="calories"/> <label for="calories"> Calories(kcal):</label> </IftaLabel></li>
-                <li> <IftaLabel> <InputText id="volume"/> <label for="volume"> Volume(ml):</label> </IftaLabel></li>
-                <li> <IftaLabel> <InputText id="dilution"/> <label for="dilution"> Dilution(1kcal:1ml):</label> </IftaLabel></li>
-              </ul>
-              <ul class="flex flex-col gap-2 mt-2">
-                <li> <IftaLabel> <Select class="w-full" /> <label for="mode"> Feeding Mode:</label> </IftaLabel></li>
-                <li> <IftaLabel> <InputText id="dura" /> <label for="dura"> Feeding Duration:</label> </IftaLabel></li>
-                <li> <IftaLabel> <InputText id="freq" /> <label for="freq"> Feeding Frequency:</label> </IftaLabel></li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="w-full mt-5">
-            <label class="font-bold"> Diet Restrictions</label>
-            <ul class="flex flex-start gap-5 ml-10 mt-2">
-              <li class="w-full"> <IftaLabel> <Select class="w-full"/> <label for="precaution"> Food Precautions:</label> </IftaLabel></li>
-              <li class="w-full"> <IftaLabel> <Select class="w-full"/> <label for="allergies"> Food Allergies:</label> </IftaLabel></li>
+    <div class="doctors-main-form-wrapper">
+      
+      <div class="doctors-main-form-container-1">
+          <section>
+            <label class="font-bold"> Reminders</label>
+            <ul class="flex flex-col gap-2" v-for="reminder in reminders">
+              <li class="flex items-start gap-2">
+                <Icon name="ic:baseline-check" class="text-2xl bg-primary" />
+                <p class="text-sm text-gray-500"> {{ reminder }} </p>
+              </li>
             </ul>
-          </div>
-
-          <div class="w-full mt-5">
-            <label class="font-bold"> Nutrients </label>
-            <div class="flex justify-start gap-2">
-              <ul class="flex flex-col gap-2 ml-10 mt-2">
-                <li> <IftaLabel> <InputText id="mode"/> <label for="mode"> Protein:</label> </IftaLabel></li>
-                <li> <IftaLabel> <InputText id="mode"/> <label for="mode"> Fats:</label> </IftaLabel></li>
-              </ul>
-              <ul class="flex flex-col gap-2 ml-10 mt-2">
-                <li> <IftaLabel> <InputText id="mode"/> <label for="mode"> Carbohydrates:</label> </IftaLabel></li>
-                <li> <IftaLabel> <InputText id="mode"/> <label for="mode"> Fiber:</label> </IftaLabel></li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="w-full mt-5">
-            <label class="font-bold"> SNS (Special Nutrition Supplement)</label>
-            <div class="flex flex-col gap-2 mt-5 ml-10">
-              <IftaLabel> <Select  class="w-full" id="snsType"/><label for="snsType"> SNS Type:</label> </IftaLabel>
-              <IftaLabel> <Select  class="w-full" id="snsType"/><label for="snsType"> SNS Frequency:</label> </IftaLabel>
-              <IftaLabel> <InputText  class="w-full" id="snsType"/><label for="snsType"> SNS Description:</label> </IftaLabel>
-            </div>
-          </div>
-
-          <div class="w-full flex flex-col mt-5">
-            <label class="font-bold"> Diet Remarks</label>
-            <Textarea class="w-90 mt-2 ml-10"/>
-          </div>
-        </div>
+          </section>
+          <section class="mt-5">
+            <label class="font-bold mt-2"> Diet Order Cut Off Time</label>
+            <ul class="text-sm text-gray-500 flex flex-col gap-2 mt-2">
+              <li class="flex items-center gap-2">
+                <Icon name="bi:cloud-sun-fill" class="text-2xl" />
+                <label> Breakfast: 5:00 AM </label>
+              </li>
+              <li class="flex items-center gap-2">
+                <Icon name="bi:sun-fill" class="text-2xl" />
+                <label> Lunch: 11:00 AM </label>
+              </li>
+              <li class="flex items-center gap-2">
+                <Icon name="bi:moon-fill" class="text-xl" />
+                <label> Dinner: 4:00 PM </label>
+              </li>
+            </ul>
+          </section>
       </div>
 
-      <div class="w-full flex items-center justify-between mt-5">
-        <Button severity="danger" label="Cancel"/>
-        <Button class="" label="Save Diet Order" />
+      <div class="doctors-main-form-container-2">
+        <section>
+          <Divider align="left" type="dashed">
+            <div  class="flex items-center gap-2">
+              <Icon name="fluent:number-circle-1-16-filled" class="text-2xl" />
+              <label class="font-bold">Diet Category</label>
+            </div>
+          </Divider>
+          <ul class="flex gap-8 ml-10 mt-2">
+            <li class="flex items-center gap-5">
+              <RadioButton v-model="selected.dietCategory" name="Oral" value="1" inputId="oral" /> 
+              <label for="oral"> Oral </label> 
+            </li>
+            <li class="flex items-center gap-5">
+              <RadioButton v-model="selected.dietCategory" name="Enteral" value="2" inputId="enteral" /> 
+              <label for="enteral"> Enteral </label>
+            </li>
+          </ul>
+        </section>
+        
+        <section>
+          <Divider align="left" type="dashed">
+            <div  class="flex items-center gap-2">
+              <Icon name="fluent:number-circle-2-16-filled" class="text-2xl" />
+              <label class="font-bold">Diet Type</label>
+            </div>
+          </Divider>
+          <ul class="flex gap-2 justify-between items-center ml-10" v-if="selected.dietCategory === '1'">
+            <li class="flex-col w-full ">
+              <Select v-model="selected.dietType1" 
+                class="w-full" 
+                placeholder="Select Diet Type" 
+                :options="DietTypes.routineTypes" 
+                optionLabel="name" 
+                optionValue="id" 
+                @change = "onDietType1Change"
+                :invalid="isDietType1Required"
+              />
+            </li>
+            
+            <Select v-model="selected.dietType2" 
+              class="w-full ml-10" 
+              placeholder="Select Therapeutic Diet Type" 
+              :options="DietTypes.therapeuticTypes"
+              :invalid="isDietType2Required" 
+              optionLabel="name" 
+              optionValue="id" 
+              v-if="show_Add_SubDietType_Input"
+            />
+
+            <li class="flex-col gap-2 w-full" v-if="show_Add_Therapeutic_Input">
+              <Select v-model="selected.dietType2" 
+                class="w-full" 
+                placeholder="Select Therapeutic Diet Type" 
+                :options="DietTypes.therapeuticTypes"
+                :invalid="isDietType2Required" 
+                optionLabel="name" 
+                optionValue="id" 
+              />
+            </li>
+            
+            <custom_button 
+              :icon=" show_Add_SubDietType_Input ? 'ic:baseline-remove' : 'ic:baseline-add'"  
+              :severity="show_Add_SubDietType_Input ? 'danger' : 'primary'"
+              v-if="show_Add_DietType_Button" 
+              @clicked="onClickedAddDietType" 
+            />
+          </ul>
+
+          <div v-else class="flex gap-2 justify-between items-center">
+            <Select v-model="selected.dietType1" 
+              class="w-full ml-10" 
+              placeholder="Select Diet Type" 
+              :options="DietTypes.tubefeedingMeals" 
+              optionLabel="name" 
+              optionValue="id" 
+              :invalid="selected.dietType1 === null"/>
+          </div>
+          
+        </section>
+
+        <section>
+          <Divider align="left" type="dashed">
+            <div  class="flex items-center gap-2">
+              <Icon name="fluent:number-circle-3-16-filled" class="text-2xl" />
+              <label class="font-bold">Diet Requirements</label>
+            </div>
+          </Divider>
+          <div class="flex gap-10 ml-10">
+            <div class="flex flex-col gap-2 mt-2">
+              <IftaLabel> 
+                <InputText v-model="selected.dietCalories" id="calories" :invalid="isDietCaloriesRequired"/> 
+                <label for="calories"> Calories(kcal):</label> 
+              </IftaLabel>
+              <IftaLabel v-if="show_as_Enteral"> 
+                <InputText v-model="selected.dietDilution" id="dilution" :invalid="isDietDilutionRequired"/> 
+                <label for="dilution"> Dilution(1kcal:1ml):</label> 
+              </IftaLabel>
+            </div>
+
+            <div class="flex flex-col gap-2 mt-2" v-if="show_as_Enteral">
+              <IftaLabel> 
+                <Select v-model="selected.feedingMode" :invalid="isFeedingModeRequired" :options="DietTypes.feedingMode" optionValue="id" showClear class="w-full" optionLabel="name" />
+                <label for="mode"> Feeding Mode:</label> 
+              </IftaLabel>
+              <IftaLabel> 
+                <InputText v-model="selected.feedingDuration" id="dura" :invalid="isFeedingDurationRequired"/> 
+                <label for="dura"> Feeding Duration:</label> 
+              </IftaLabel>
+              <IftaLabel> 
+                <InputText v-model="selected.feedingFrequency" id="freq" :invalid="isFeedingFrequencyRequired" /> 
+                <label for="freq"> Feeding Frequency:</label> 
+              </IftaLabel>
+            </div>
+          </div>
+        </section>
+        
+        <section>
+          <Divider align="left" type="dashed">
+            <div  class="flex items-center gap-2">
+              <Icon name="fluent:number-circle-4-16-filled" class="text-2xl" />
+              <label class="font-bold">Macronutrients</label>
+            </div>
+          </Divider>
+          <div class="flex justify-start gap-2">
+            <div class="flex flex-col gap-2 ml-10 mt-2">
+              <IftaLabel> 
+                <InputText 
+                  v-model="selected.nutrientsProtein" 
+                  id="mode"
+                  :invalid="isNutrientsProteinRequired"
+                />
+                <label for="mode"> Protein:</label> 
+              </IftaLabel>
+              <IftaLabel> 
+                <InputText v-model="selected.nutrientsFat" 
+                  id="mode" 
+                  :invalid="isNutrientsFatRequired"
+                />
+                <label for="mode"> Fats:</label> 
+              </IftaLabel>
+            </div>
+            <div class="flex flex-col gap-2 ml-10 mt-2">
+              <IftaLabel> 
+                <InputText v-model="selected.nutrientsCarbohydrates" 
+                  id="mode" 
+                  :invalid="isNutrientsCarbsRequired"
+                />
+                <label for="mode"> Carbohydrates:</label> 
+              </IftaLabel>
+              <IftaLabel> 
+                <InputText v-model="selected.nutrientsFiber" 
+                  id="mode"
+                />
+                <label for="mode"> Fiber:</label> 
+              </IftaLabel>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <Divider align="left" type="dashed">
+            <div  class="flex items-center gap-2">
+              <Icon name="fluent:number-circle-5-16-filled" class="text-2xl" />
+              <label class="font-bold">Diet Restrictions</label>
+            </div>
+          </Divider>
+          <div class="flex gap-5 ml-10 mt-2">
+            <InputGroup class="w-full">
+              <IftaLabel> 
+                <Select v-model="selected.allergyType" 
+                  showClear class="w-full" 
+                  :options="DietTypes.allergiesMenu"
+                  :invalid="isAllergyTypeRequired" 
+                  optionLabel="name" 
+                  optionValue="id"
+                  @change="onAllergyChange"
+                /> 
+                <label for="allergies"> Allergies:</label> 
+              </IftaLabel>
+
+              <IftaLabel v-if="selected.allergyType === '10'"> 
+                <MultiSelect v-model="selected.allergySubtype" 
+                  :maxSelectedLabels="2"
+                  :options="DietTypes.allergiesSubmenu"
+                  :invalid="isAllergySubtypeRequired"
+                  showClear 
+                  class="w-full" 
+                  optionLabel="name" 
+                  optionValue="id" 
+                /> 
+                <label for="allergies"> Food Allergies:</label> 
+              </IftaLabel>
+
+              <IftaLabel v-if="selected.allergyType === '11'">
+                <InputText v-model="selected.allergySubtype"  
+                  id="allergies" 
+                  class="w-full"
+                  :invalid="isAllergySubtypeRequired"
+                  /> 
+                <label for="allergies"> Input Allergies:</label>
+              </IftaLabel>
+            </InputGroup> 
+
+            <IftaLabel class="w-full"> 
+              <Select v-model="selected.precautions" 
+                showClear class="w-full" 
+                :options="DietTypes.precautions"
+                optionLabel="name" 
+                optionValue="id"/> 
+              <label for="precaution"> Food Precautions:</label> 
+            </IftaLabel>
+
+          </div>
+        </section>
+
+        <section>
+          <Divider align="left" type="dashed">
+            <div  class="flex items-center gap-2">
+              <Icon name="fluent:number-circle-6-16-filled" class="text-2xl" />
+              <label class="font-bold">SNS (Special Nutrition Supplement)</label>
+            </div>
+          </Divider>
+          <div class="flex flex-col gap-2 mt-5 ml-10">
+            <IftaLabel> 
+              <Select v-model="selected.snsType" 
+                :options="DietTypes.onsTypes"
+                optionLabel="name" 
+                optionValue="id" 
+                showClear 
+                class="w-full" 
+                id="snsType"
+              />
+              <label for="snsType"> SNS Type:</label> 
+            </IftaLabel>
+
+            <IftaLabel> 
+              <MultiSelect v-model="selected.snsFrequency" 
+                :options="DietTypes.Snacktime"
+                :invalid="isSnsFrequencyRequired"
+                optionLabel="name" 
+                optionValue="code" 
+                showClear 
+                class="w-full" 
+                id="snsTypes" 
+              />
+              <label for="snsType"> SNS Frequency:</label> 
+            </IftaLabel>
+
+            <IftaLabel> 
+              <InputText v-model="selected.snsDescription" 
+                class="w-full" 
+                id="snsType"
+                :invalid="isSnsDescriptionRequired"
+              />
+              <label for="snsType"> SNS Description:</label> 
+            </IftaLabel>
+          </div>
+        </section>
+
+        <section class="flex flex-col">
+          <Divider align="left" type="dashed">
+            <div  class="flex items-center gap-2">
+              <Icon name="fluent:number-circle-7-16-filled" class="text-2xl" />
+              <label class="font-bold">Other Remarks</label>
+            </div>
+          </Divider>
+          <Textarea v-model="selected.remarks" class="mt-2 ml-10"/>
+        </section>
+
+        <section class="mt-10 flex items-center justify-end gap-12 "> 
+          <Button severity="secondary" raised text @click="onClickClearForm">
+            <Icon name="mdi:delete-forever" class="text-2xl text-red-500" />
+            <span class="text-sm"> Clear Form </span>
+          </Button>
+          <Button raised @click="onClickSubmit">
+            <Icon name="mdi:content-save-move" class="text-2xl" />
+            <span class="text-sm font-bold"> Issue Diet Order </span>
+          </Button>
+        </section>
       </div>
     </div>
 
+
+      <Dialog
+        v-model:visible="toggleUseSavedDietOrder"
+        :draggable="false" 
+        :closable="true" 
+        :dismissableMask="true" 
+        :blockScroll="true"  
+        modal
+      >
+        <template #header>
+          <div class="w-full ">
+            <label class="font-bold text-xl">Use Saved?</label> 
+          </div>
+        </template>
+        <p>A previous file was saved due to unexpected closure. Do you wish to use it?</p>
+        <div class="flex justify-between items-center mt-10">
+          <Button severity="secondary" raised text @click="toggleDietOrder = false">
+            <Icon name="mdi:close" class="text-2xl text-red-500" />
+            <span class="text-sm font-bold" @click="clearSelectedStorage()"> Cancel </span>
+          </Button>
+          <Button severity="primary" raised @click="onClickSubmit">
+            <Icon name="mdi:content-save-move" class="text-2xl" />
+            <span class="text-sm font-bold"> Use Saved </span>
+          </Button>
+        </div>
+      </Dialog>
+      
+
+
+      <Dialog
+        v-model:visible="toggleDietOrder"
+        :draggable="false" 
+        :closable="true" 
+        :dismissableMask="true" 
+        :blockScroll="true"  
+        modal
+      >
+        <template #header>
+          <div class="w-full ">
+            <label class="font-bold text-xl">Save Entry as Draft?</label> 
+            <p> Saving this entry will save it as a draft and can be used later. </p>
+          </div>
+        </template>
+        <div class="w-full flex flex-col gap-2 mt-5">
+          <label class="font-bold"> Title </label>
+          <InputText v-model="draft.title" 
+            class="w-full" 
+            placeholder="Enter title for this draft."
+          />
+          <label class="font-bold mt-5"> Remarks </label>
+          <Textarea v-model="draft.remarks" 
+            class="w-full" 
+            placeholder="Enter remarks for this draft (optional)"
+          />
+        </div>
+        <div class="flex justify-between items-center mt-10">
+          <Button severity="secondary" raised text @click="toggleDietOrder = false">
+            <Icon name="mdi:close" class="text-2xl text-red-500" />
+            <span class="text-sm font-bold" @click="toggleDietOrder = false"> Cancel </span>
+          </Button>
+          <Button severity="primary" raised @click="onClickSubmit">
+            <Icon name="mdi:content-save-move" class="text-2xl" />
+            <span class="text-sm font-bold"> Save Draft </span>
+          </Button>
+        </div>
+      </Dialog>
+
     
-    
+  
   </div>
 </template>
 

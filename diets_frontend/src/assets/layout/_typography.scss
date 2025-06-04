@@ -66,3 +66,42 @@ p {
         margin-bottom: 0;
     }
 }
+
+.label-smaller {
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-weight: bold;
+}
+
+.label-small {
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-weight: bolder;
+}
+
+.label-medium {
+    font-size: 1rem;
+    color: var(--primary-color);
+    font-weight: bolder;
+
+}
+
+.data-output {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.data-output-small {
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.data-output-medium {
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.data-output-large {
+    font-weight: bold;
+    font-size: 2rem;
+}

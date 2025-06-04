@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 400, statusMessage: "Missing enccode parameter" });
     }
 
-    const uri = `${BACKEND_API}/api/v1/patients-diet-history/${hpercode}`;
+    const uri = `${BACKEND_API}/api/doctors-orders-history/${hpercode}`;
     result.value = await $fetch(uri);
     return result.value;
 

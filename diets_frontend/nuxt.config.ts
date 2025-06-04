@@ -4,7 +4,7 @@ import Theme from '@primevue/themes/aura';
 export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
     devtools: { enabled: false },
-    modules: ['@primevue/nuxt-module', '@nuxtjs/tailwindcss', '@nuxt/icon'],
+    modules: ['@primevue/nuxt-module', '@nuxtjs/tailwindcss', '@nuxt/icon', '@vueuse/nuxt', '@pinia/nuxt'],
     srcDir: 'src/',
     css: [
         '/assets/styles.scss',
@@ -50,6 +50,6 @@ export default defineNuxtConfig({
             AUTH_API: process.env.AUTHENTICATION_API || 'http://localhost:8003',
             BACKEND_API: process.env.BACKEND_API || 'http://127.0.0.1:8000',
         },
-    },
+    }
 
 })

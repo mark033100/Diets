@@ -2,21 +2,36 @@
 
 import {useLayout} from "~/layouts/composables/layout.js";
 import AppConfigurator from "~/layouts/AppConfigurator.vue";
+import SearchPatients from "~/components/SearchPatients.vue";
 
-const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
+const { onMenuToggle, toggleDarkMode, isDarkTheme, setMenuMode } = useLayout();
 const showUserInfo = ref();
+
+const router = useRouter();
+const patientSearchModal = ref(false);
+
+
+const togglePatientSearchDialog = () => {
+    patientSearchModal.value = !patientSearchModal.value;
+}
+
+const currentRoute = router.currentRoute.value.fullPath.split('/').filter(Boolean);
+const isDoctorsPage = currentRoute[0] === 'doctor';
+
+if(isDoctorsPage) {
+    setMenuMode('overlay');
+}
 
 const toggleUserInfo = (event) => {
     showUserInfo.value.toggle(event);
 };
-
 
 </script>
 
 <template>
     <div class="layout-topbar">
         <div class="layout-topbar-logo-container">
-            <button class="layout-menu-button layout-topbar-action" @click="onMenuToggle">
+            <button class="layout-menu-button layout-topbar-action" @click="onMenuToggle" v-if="!isDoctorsPage">
                 <i class="pi pi-bars"></i>
             </button>
             <router-link to="/" class="layout-topbar-logo">
@@ -37,13 +52,17 @@ const toggleUserInfo = (event) => {
                         />
                     </g>
                 </svg>
-
                 <span>DIETS</span>
             </router-link>
         </div>
-
+        
         <div class="layout-topbar-actions">
             <div class="layout-config-menu">
+                <Button severity="primary" rounded  class="ml-16 px-20 text-sm" @click="togglePatientSearchDialog">
+                    <Icon name="fluent:person-search-16-filled" size="1.5em" />
+                    <span>Patient Search</span>
+                </Button>
+                
                 <button type="button" class="layout-topbar-action" @click="toggleDarkMode">
                     <i :class="['pi', { 'pi-moon': isDarkTheme, 'pi-sun': !isDarkTheme }]"></i>
                 </button>
@@ -86,5 +105,9 @@ const toggleUserInfo = (event) => {
                 </div>
             </div>
         </div>
+
+        <Dialog v-model:visible="patientSearchModal" header="Patient Search" modal>
+            <SearchPatients @close="patientSearchModal = false"/>
+        </Dialog>
     </div>
 </template>

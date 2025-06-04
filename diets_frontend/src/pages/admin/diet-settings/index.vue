@@ -88,9 +88,15 @@ onBeforeMount(() => formatDietTypes());
 
 <template>
   <div>
+    
     <section class="card">
-      <h1 class="m-0">Diet Settings </h1>
-      <p>Manage Dietary Information and Configuration</p>
+      <p class=" flex items-center gap-2 mb-6 text-sm">
+        <a><i class="pi pi-home"></i> Home</a>
+        <a><i class="pi pi-angle-right"></i> Diet Settings</a>
+        <a><i class="pi pi-angle-right"></i> Diet Types Configuration</a>
+      </p>
+      <h3 class="m-0">Diet Settings </h3>
+      <p class="text-sm">Manage Dietary Information and Configuration</p>
     </section>
 
   <Tabs value="0" class="card">

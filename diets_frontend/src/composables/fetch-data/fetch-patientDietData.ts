@@ -1,5 +1,5 @@
 
-export const useFetchPatientDietData = async (enccode: any) => {
+export const useFetchPatientDietData = async (enccode: string) => {
 
   const result = ref();
 
@@ -25,7 +25,7 @@ export const useFetchPatientDietData = async (enccode: any) => {
     };
   }
 
-  { return result.value }
+  return result.value;
 
 }
 

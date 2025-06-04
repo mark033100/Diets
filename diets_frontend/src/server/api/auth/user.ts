@@ -3,8 +3,6 @@ export default defineEventHandler(async (event) => {
   const { AUTH_API } = useRuntimeConfig();
 
 
-
-
   const response = await $fetch(`${AUTH_API}/api/v1/user`, {
     method: 'GET',
     headers: {

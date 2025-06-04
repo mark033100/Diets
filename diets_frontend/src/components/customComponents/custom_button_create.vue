@@ -12,9 +12,6 @@ const props = defineProps({
 
 const emit = defineEmits(['clickedButton']);
 
-function test () {
-  console.log('Test')
-}
 
 </script>
 
