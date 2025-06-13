@@ -34,9 +34,11 @@ const patientTags = computed(() => patientStore.patientTags);
       <custom_user_icon :gender="patientsDietResult.patsex"/>
       <div class="flex flex-col ">
         <span class="flex gap-2">
-          <Tag v-for="tag in patientTags" :key="tag.id" :severity="tag.severity" >
-            <p class="text-xs">{{ tag.title }}</p>
-          </Tag>  
+          <ClientOnly>
+            <Tag v-for="tag in patientTags" :key="tag.id" :severity="tag.severity" >
+              <p class="text-xs">{{ tag.title }}</p>
+            </Tag> 
+          </ClientOnly>
         </span>
         <p class="data-output-medium">{{ patientsDietResult?.patname }}</p>
         <div class="flex gap-4">

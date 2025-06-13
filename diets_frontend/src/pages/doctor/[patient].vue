@@ -71,11 +71,6 @@ async function handleFetchSuccess(patient) {
 
 }
 
-
-function onClickCancel() {
-  toggleDietOrder.value = false;
-}
-
 async function onSuccessSubmit() {
   toggleDietOrder.value = false;
   await fetchPatientDietData();
@@ -128,16 +123,18 @@ async function onSuccessSubmit() {
         :style="{ width: '95vw', height: '95vh' }" 
         :draggable="false" 
         :closable="true" 
-        :dismissableMask="true" 
         :closeOnEscape="true" 
         :blockScroll="true" 
         class="overflow-y-hidden"
         modal>
         <template #header>
-          <div class="w-full ">
-            <label class="font-bold text-xl">Create Diet Order</label> 
-            <p> This is a form to create a new diet order for a patient. </p>
+          <div class="w-full">
+            <span>
+              <label class="font-bold text-xl">Create Diet Order</label> 
+              <p> This is a form to create a new diet order for a patient. </p>
+            </span>
           </div>
+          
         </template>
         <CreateNewDoctorsOrder 
           :age="patientsDietResult.unformattedAge" 

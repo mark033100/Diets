@@ -2,7 +2,7 @@
 import DietTypes from '~/assets/json/DietTypes.json';
 import custom_button from '~/components/customComponents/buttons/custom_button_icon.vue';
 import { useDoctorsOrderValidation } from '~/composables/validations/validation-doctorsOrderForm';
-import type { doctorsOrdeInputInterface, validationResult, cookieUserInterface } from '@/types/objectTypes';
+import type { doctorsOrdeInputInterface, validationResult, cookieUserInterface, doctorsOrderFormInterface } from '@/types/objectTypes';
 
 const props = defineProps({
   age: {
@@ -39,6 +39,7 @@ const LOCAL_STORAGE_KEY = 'diet-form';
 const toast = useToast();
 const patient_age = props.age ? Number(props.age) : 0;
 const authUserCookie = useCookie<cookieUserInterface>('authUser');
+const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
 const toggleDietOrder = ref(false);
 const toggleUseSavedDietOrder = ref(false);
 
@@ -47,16 +48,16 @@ const draft = reactive({
   remarks: ''
 });
 
-const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
-const initialData  = savedData ? JSON.parse(savedData) : {
+
+const selected = reactive <doctorsOrderFormInterface>({
   dietCategory: '1',
   dietType1: null,
   dietType2: null,
   dietCalories: null,
   dietVolume: null,
   dietDilution: '1',
-  nutrientsProtein: null,
-  nutrientsCarbohydrates: null,
+  nutrientsProtein: null ,
+  nutrientsCarbohydrates: null ,
   nutrientsFat: null,
   nutrientsFiber: null,
   feedingMode: null,
@@ -69,12 +70,11 @@ const initialData  = savedData ? JSON.parse(savedData) : {
   snsFrequency: null,
   snsDescription: null,
   remarks: null,
-};
-const selected = reactive(initialData);
+});
 
 const debouncedSave = useDebounceFn(() => {
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ ...selected }));
-}, 5000);
+});
 
 watch (() => ({ ...selected }), debouncedSave, { deep: true });
 
@@ -87,19 +87,19 @@ const show_as_Enteral = computed(() => selected.dietCategory === '2' ? true : fa
 
 // Input Invalid Validation condition values
 const isDietType1Required = computed(() => selected.dietType1 === null);
-const isDietType2Required = computed(() => selected.dietType1 === '46' && selected.dietType2 === null);
-const isDietCaloriesRequired = computed(() => selected.dietCalories === null);
-const isDietDilutionRequired = computed(() => selected.dietCategory === '2' && selected.dietDilution === null);
-const isNutrientsProteinRequired = computed(() => patient_age > 18 && selected.nutrientsProtein === null);
-const isNutrientsCarbsRequired = computed(() => patient_age > 18 && selected.nutrientsCarbohydrates === null);
-const isNutrientsFatRequired = computed(() => patient_age > 18 && selected.nutrientsFat === null);
-const isFeedingModeRequired = computed(() => selected.feedingMode === null);
-const isFeedingDurationRequired = computed(() => selected.feedingDuration === null);
-const isFeedingFrequencyRequired = computed(() => selected.feedingFrequency === null);
-const isAllergyTypeRequired = computed(() => selected.allergyType === null);
-const isAllergySubtypeRequired = computed(() => selected.allergySubtype === null);
-const isSnsFrequencyRequired = computed(() => selected.snsType && selected.snsFrequency === null);
-const isSnsDescriptionRequired = computed(() => selected.snsType && selected.snsDescription === null);
+const isDietType2Required = computed(() => !!(selected.dietType1 === '46' && selected.dietType2 === null));
+const isDietCaloriesRequired = computed(() => !!selected.dietCalories === null);
+const isDietDilutionRequired = computed(() => !!(selected.dietCategory === '2' && selected.dietDilution === null));
+const isNutrientsProteinRequired = computed(() => !!(patient_age > 18 && selected.nutrientsProtein === null));
+const isNutrientsCarbsRequired = computed(() => !!(patient_age > 18 && selected.nutrientsCarbohydrates === null));
+const isNutrientsFatRequired = computed(() => !!(patient_age > 18 && selected.nutrientsFat === null));
+const isFeedingModeRequired = computed(() => !!selected.feedingMode === null);
+const isFeedingDurationRequired = computed(() => !!selected.feedingDuration === null);
+const isFeedingFrequencyRequired = computed(() => !!selected.feedingFrequency === null);
+const isAllergyTypeRequired = computed(() => !!selected.allergyType === null);
+const isAllergySubtypeRequired = computed(() => !!selected.allergySubtype === null);
+const isSnsFrequencyRequired = computed(() => !!(selected.snsType && selected.snsFrequency === null));
+const isSnsDescriptionRequired = computed(() => !!(selected.snsType && selected.snsDescription === null));
 
 // Component Functions
 const onClickedAddDietType = () => {
@@ -145,13 +145,7 @@ const onClickSubmit = () => {
       detail: 'Please fill in all required fields.',
       life: 3000
     });
-    console.log(errors);
   }
-}
-
-const onClickCancel = () => { 
-  clearSelectedStorage();
-  emit('closeDialog');
 }
 
 const submitForm = async () => {
@@ -218,7 +212,7 @@ const onClickClearForm = () => {
   selected.snsType = null;
   selected.snsFrequency = null;
   selected.snsDescription = null;
-  selected.remarks = '';
+  selected.remarks = null;
 }
 
 const computeNutrients = () => {
@@ -245,11 +239,10 @@ const computeNutrients = () => {
           protein = Math.round((calories * 0.15) / 4);       
           fats = Math.round((calories * 0.30) / 9);          
 
-          selected.dietCalories = calories;
-          selected.nutrientsCarbohydrates = carbohydrates;
-          selected.nutrientsProtein = protein;
-          selected.nutrientsFat = fats;
-          selected.age = 18; 
+          selected.dietCalories = calories.toString();
+          selected.nutrientsCarbohydrates = carbohydrates.toString();
+          selected.nutrientsProtein = protein.toString();
+          selected.nutrientsFat = fats.toString();
       }
   }
 }
@@ -260,12 +253,24 @@ const isSavedAvailable = () => {
   }
 }
 
+const handleOnClick_UseSavedDietOrder = () => {
+  if (savedData !== null) {
+    Object.assign(selected, JSON.parse(savedData));
+  }
+  toggleUseSavedDietOrder.value = false;
+}
+
+const handleOnClick_CancelUseSavedDietOrder = () => { 
+  clearSelectedStorage();
+  toggleUseSavedDietOrder.value = false;
+}
+
 onMounted(() => { 
   computeNutrients();
   isSavedAvailable();
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
   clearSelectedStorage();
 })
 
@@ -285,7 +290,7 @@ onUnmounted(() => {
               </li>
             </ul>
           </section>
-          <section class="mt-5">
+          <section>
             <label class="font-bold mt-2"> Diet Order Cut Off Time</label>
             <ul class="text-sm flex flex-col gap-2 mt-2">
               <li class="flex items-center gap-2">
@@ -604,9 +609,9 @@ onUnmounted(() => {
       <div class="flex justify-between items-center mt-10">
         <Button severity="secondary" raised text @click="toggleDietOrder = false">
           <Icon name="mdi:close" class="text-2xl text-red-500" />
-          <span class="text-sm font-bold" @click="clearSelectedStorage()"> Cancel </span>
+          <span class="text-sm font-bold" @click="handleOnClick_CancelUseSavedDietOrder()"> Cancel </span>
         </Button>
-        <Button severity="primary" raised @click="onClickSubmit">
+        <Button severity="primary" raised @click="handleOnClick_UseSavedDietOrder()">
           <Icon name="mdi:content-save-move" class="text-2xl" />
           <span class="text-sm font-bold"> Use Saved </span>
         </Button>
@@ -650,14 +655,6 @@ onUnmounted(() => {
         </Button>
       </div>
     </Dialog>
-
-    
   
   </div>
 </template>
-
-
-
-<style>
-
-</style>

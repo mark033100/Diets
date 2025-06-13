@@ -89,3 +89,28 @@ export interface nutritionScreeningInterface {
     entry_by: string,
     age: string
 }
+
+
+
+export interface doctorsOrderFormInterface {
+    dietCategory: '1' | '2',
+    dietType1: string | null,
+    dietType2: string | null,
+    dietCalories: string | null,
+    dietVolume: string | null,
+    dietDilution: string | null,
+    nutrientsProtein: string | null,
+    nutrientsCarbohydrates: string | null,
+    nutrientsFat: string | null,
+    nutrientsFiber: string | null,
+    feedingMode: string | null,
+    feedingDuration: string | null,
+    feedingFrequency: string | null,
+    allergyType: string | null,
+    allergySubtype: string | null,
+    precautions: string | null,
+    snsType: string | null,
+    snsFrequency: Array<string> | null,
+    snsDescription: string | null,
+    remarks: string | null
+}

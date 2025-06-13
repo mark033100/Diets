@@ -46,13 +46,13 @@ const setError = () => {
 
 const screeningApiStatus = computed(() => screeningStatus.value);
 
-// if (screeningApiStatus.value === 'success') {
-//   let stat = patientNutritionScreeningData.value[0]?.riskIndicator === 'Nutritionally at Risk' ? 'danger' : 'success';
-//   patientStore.addPatientTag({
-//     title: patientNutritionScreeningData.value[0]?.riskIndicator,
-//     severity: stat
-//   });
-// }
+if (screeningApiStatus.value === 'success') {
+  setPatientNutritionTag();
+}
+
+const fetch_PatientNutritionScreening = async () => { 
+
+}
 
 const setAnswers = (value) => {
   answers.value = new Array(4).fill(value);
@@ -127,11 +127,11 @@ const handleOnClick_SaveNutritionSreening = async () => {
 const handleSuccess_NutritionScreening = () => {
   nutritionScreeningDialog.value = false;
   addQuestionDialog.value = false;
+  setPatientNutritionTag();
   clearAnswers();
   refresh();
   toast.add({ severity: 'success', summary: 'Saving Success', detail: 'Nutrition Screening Answers are Saved Successfully!', life: 3000 });
 }
-
 
 const handleFail_NutritionScreening = () => {
   toast.add({ severity: 'error', summary: composable_Result.title, detail: composable_Result.error.statusMessage, life: 3000 });
@@ -163,25 +163,32 @@ const confirm_DeleteNutritionScreening = (event, id) => {
   })
 }
 
+function setPatientNutritionTag () { 
+  let stat = patientNutritionScreeningData.value[0]?.riskIndicator === 'Nutritionally at Risk' ? 'danger' : 'success';
+  patientStore.addPatientTag({
+    title: patientNutritionScreeningData.value[0]?.riskIndicator,
+    severity: stat
+  });
+}
+
 </script>
 
 
 <template>
   <div>
+    <div class="panel-header flex justify-between items-center">
+      <h5 class="wrapper"> 
+        <Icon name="healthicons:weight" size="1.5em" class="icon"/> 
+        <span class="title"> Patient Nutrition Overview</span>
+      </h5>
+      <Button text @click="handleOnClick_NutritionAssessments()" v-if="screeningApiStatus === 'success'"> 
+        View
+        <Icon name="fluent:open-12-filled" size="2rem" class="icon" />
+      </Button>
+    </div>
     <div v-if="screeningApiStatus === 'pending'"> Loading...</div>
     <errorInlineMessage v-else-if="screeningApiStatus === 'error'" :errorObject="setError()"/>
     <div v-else-if="screeningApiStatus === 'success'">
-      <div class="panel-header flex justify-between items-center">
-        <h5 class="wrapper"> 
-          <Icon name="healthicons:weight" size="1.5em" class="icon"/> 
-          <span class="title"> Patient Nutrition Overview</span>
-        </h5>
-        <Button text @click="handleOnClick_NutritionAssessments()"> 
-          View
-          <Icon name="fluent:open-12-filled" size="2rem" class="icon" />
-        </Button>
-        
-      </div>
       <span>
         <label class="label-small"> Nutrition Screening Result</label>
         <p class="data-output">{{ patientNutritionScreeningData[0]?.riskIndicator || ''}} </p>
