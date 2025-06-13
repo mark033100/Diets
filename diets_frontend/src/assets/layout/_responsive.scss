@@ -12,23 +12,13 @@
         margin-left: auto !important;
         margin-right: auto !important;
     }
-
-    .doctors-main-form-wrapper {
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-    }
-
-    .doctors-main-form-conatainer-1 {
-        flex: 1;
-    }
-
-    .doctors-main-form-container-2 {
-        flex: 2;
-    }
 }
 
 @media (min-width: 992px) {
+    .blocked-scroll {
+        overflow: hidden;
+    }
+
     .layout-wrapper {
         &.layout-overlay {
             .layout-main-container {
@@ -103,13 +93,12 @@
 
         .nutrition-screening {
             grid-column: span 4;
-            grid-row: span 4;
+            grid-row: span 5;
             margin-bottom: 0;
         }
 
         .diet-history {
             grid-column: span 12;
-            grid-row: span 4;
             margin-bottom: 0;
         }
 

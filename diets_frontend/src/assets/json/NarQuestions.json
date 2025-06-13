@@ -1,0 +1,60 @@
+{
+    "pedia": [
+        {
+            "id": "question1",
+            "question": "Has the child unintentionally lost weight lately?"
+        },
+        {
+            "id": "question2",
+            "question": "Has the child had poor weight gain over the last few months?"
+        },
+        {
+            "id": "question3",
+            "question": "Has the child been eating/feeding less in the last few weeks?"
+        },
+        {
+            "id": "question4",
+            "question": "Is the child obviously underweight???"
+        }
+    ],
+    "adult": [
+        {
+            "id": "question1",
+            "question": "Is the BMI of the Patient lesser than 20.5 or greater or equal to 30?"
+        },
+        {
+            "id": "question2",
+            "question": "Has the patient lost weight within the past 3 months?"
+        },
+        {
+            "id": "question3",
+            "question": "Has the patient had a reduced dietary intake in the last week? "
+        },
+        {
+            "id": "question4",
+            "question": "Is the patient severeley ill (e.g. in intensive therapy)?"
+        }
+    ],
+    "reminders": {
+        "adult": [
+            {
+                "id": "reminder1",
+                "message": "If the answer is \"YES\" to any question, patient should be referred for nutrition assessment."
+            },
+            {
+                "id": "reminder2",
+                "message": "If the answer is \"NO\" to all questions, patient should be re-screened at weekly intervals. If the patient e.g. is scheduled for a major operation, a preventive nutritional care plan is considered to avoid the associated risk status."
+            }
+        ],
+        "pedia": [
+            {
+                "id": "reminder1",
+                "message": "If there are two or more 'YES' answers to any questions, patient should be referred for nutrition assessment."
+            },
+            {
+                "id": "reminder2",
+                "message": "If the answer is 'NO' to all questions, patient should be re-screened at weekly intervals. If the patient e.g. is scheduled for a major operation, a preventive nutritional care plan is considered to avoid the associated risk status."
+            }
+        ]
+    }
+}

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import DietTypes from '~/assets/json/DietTypes.json';
 import custom_button from '~/components/customComponents/buttons/custom_button_icon.vue';
-import { useDoctorsOrderValidation } from '~/composables/validations/doctorsOrderValidation';
+import { useDoctorsOrderValidation } from '~/composables/validations/validation-doctorsOrderForm';
 import type { doctorsOrdeInputInterface, validationResult, cookieUserInterface } from '@/types/objectTypes';
 
 const props = defineProps({

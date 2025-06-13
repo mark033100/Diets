@@ -1,6 +1,6 @@
 
-
 export default defineEventHandler(async (event) => {
+
 
 
   try {
@@ -11,13 +11,13 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 400, statusMessage: "Missing enccode parameter" });
     }
 
-    const uri = `${BACKEND_API}/api/patient-nutrition/${enccode}`;
+    const uri = `${BACKEND_API}/api/patient-nutrition-assessment/${enccode}`;
     const result = await $fetch(uri);
     return result;
 
-  } catch (error) {
+  } catch (error: any) {
 
-    return createError({ statusCode: 500, statusMessage: "Failed to fetch patient Nutrition Screening Data from API", data: error });
+    throw createError({ statusCode: 500, statusMessage: "Failed to fetch patient Nutrition Screening Data from API." + error, data: error.data.error_message });
 
   }
 

@@ -107,15 +107,22 @@ onUnmounted(() => {
     </div>
 
 
-    <Dialog :visible="dialogVisible" :selection="selectedDietHistory" :style="{ width: '60vw' }" :draggable="false" :closable="false" :dismissableMask="true" :closeOnEscape="true" :blockScroll="true" modal class="p-fluid" position="bottomright" >
+    <Dialog v-model:visible="dialogVisible" 
+      :selection="selectedDietHistory" 
+      :style="{ width: '60vw' }" 
+      :draggable="false" 
+      :dismissableMask=true
+      closeOnEscape 
+      blockScroll 
+      modal 
+      class="p-fluid" 
+      position="bottomright" >
       <template #header>
         <div class="flex justify-between w-full">
           <span class="flex items-center gap-2">
             <Icon name="fluent:history-32-filled" size="1.5em"/>
             <h4 class="m-0">Diet History Details</h4>
           </span>
-          
-          <Button icon="pi pi-times" rounded raised text severity="danger" @click="dialogVisible = false" />
         </div>
       </template>
       <div v-if="!selectedDietHistory">

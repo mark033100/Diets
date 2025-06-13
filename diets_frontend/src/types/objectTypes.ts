@@ -79,3 +79,13 @@ export interface cookieUserInterface {
     middlename: string,
     posttitle: string,
 }
+
+export interface nutritionScreeningInterface {
+    screeningAnswers: Array<string>,
+    enccode: string,
+    height: string,
+    weight: string,
+    bmi: string,
+    entry_by: string,
+    age: string
+}

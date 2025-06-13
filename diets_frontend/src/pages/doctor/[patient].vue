@@ -112,7 +112,7 @@ async function onSuccessSubmit() {
       </section>
 
       <section class="card nutrition-screening ">
-        <DietNutritionScreening :enccode="patientsDietResult.enccode"/>
+        <DietNutritionScreening :enccode="patientsDietResult.enccode" :age="patientsDietResult.patage"/>
       </section>
 
       <section class="card diet-history">
@@ -121,7 +121,10 @@ async function onSuccessSubmit() {
         />
       </section>
       
-      <Dialog v-model:visible="toggleDietOrder" 
+      
+
+    </div> <!-- End of Main Content Area -->
+    <Dialog v-model:visible="toggleDietOrder" 
         :style="{ width: '95vw', height: '95vh' }" 
         :draggable="false" 
         :closable="true" 
@@ -144,10 +147,7 @@ async function onSuccessSubmit() {
           :dietcode="patientsDietResult.dietcode"
           @success="onSuccessSubmit"
         />
-      </Dialog>
-
-    </div> <!-- End of Main Content Area -->
-
+    </Dialog>
   </div> <!-- End of Content Area -->
   
 </template>
