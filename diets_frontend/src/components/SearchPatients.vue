@@ -51,8 +51,6 @@ function setFilterOptions(data) {
   dietTypes.value = [...new Set(data.map(item => item.dietname))].map(item => ({ 'dietname': item}));
   wardTypes.value = [...new Set(data.map(item => item.wardname))].map(item => ({ 'wardname': item}));
 
-  console.log('Data: ', dietTypes.value);
-
 }
 
 
@@ -201,7 +199,7 @@ function onRowSelect(event) {
       </div>
     </Panel>
 
-    <div class="container mx-auto p-4">
+    <div class="container mx-auto p-4 w-full border">
       <DataTable :value="filteredPatients"
         :loading="loading"
         dataKey="id"
@@ -215,7 +213,6 @@ function onRowSelect(event) {
         currentPageReportTemplate="{first} to {last} of {totalRecords}"
         scrollable 
         scrollHeight="450px"
-        tableStyle="width: 80rem"
         pt:root:class="text-xs sm:text-xs md:text-sm lg:text-md"
         >
         <template #loading>

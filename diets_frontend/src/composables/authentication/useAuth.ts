@@ -3,13 +3,15 @@ interface LoginResponse {
   token: string;
 }
 
+import type { interface_userFetchResult } from '~/types/objectTypes';
+
 export const useAuth = () => {
   const user = useState('user', () => null);
   const response = ref();
   const authTokenCookie = useCookie('authToken');
-  const authUserCookie = useCookie('authUser');
+  const authUserCookie = useCookie<interface_userFetchResult | null>('authUser');
 
-  const login = async (credentials: { username: string; password: string }) => {
+  const login = async (credentials: { username: string; password: string }, rememberMe: boolean) => {
 
     try {
       const result: LoginResponse = await $fetch('/api/auth/login', {
@@ -17,7 +19,11 @@ export const useAuth = () => {
         body: credentials
       });
 
-      user.value = result.user;
+      const cookieOptions = rememberMe
+        ? { maxAge: 60 * 60 * 24 * 30 }    // 30 days
+        : { maxAge: 60 * 60 * 24 }; // 1 day
+
+      const authTokenCookie = useCookie('authToken', cookieOptions);
       authTokenCookie.value = result.token;
 
       return response.value = {
@@ -42,6 +48,16 @@ export const useAuth = () => {
   }
 
   const logout = async () => {
+
+    if (!authTokenCookie.value) {
+      console.log('No auth token found, user is not logged in');
+      return response.value = {
+        status: 'error',
+        title: 'Logout failed',
+        description: 'You are not logged in',
+        error: null
+      };
+    }
 
     try {
 
@@ -75,14 +91,34 @@ export const useAuth = () => {
 
   const fetchUserDetails = async () => {
 
+    if (!authTokenCookie.value) {
+      return response.value = {
+        status: 'error',
+        title: 'User fetch failed',
+        description: 'You are not logged in',
+        error: null,
+        data: null
+      };
+    }
+
     try {
 
-      const result = await $fetch(`/api/auth/user/`, {
+      const result: interface_userFetchResult = await $fetch(`/api/auth/user/`, {
         method: 'POST',
         body: { token: authTokenCookie.value }
       });
 
-      authUserCookie.value = result as any;
+      const user_level = check_position(result.postitle);
+
+      authUserCookie.value = {
+        employeeid: result.employeeid,
+        user_name: result.user_name,
+        user_level: user_level,
+        firstname: result.firstname,
+        lastname: result.lastname,
+        middlename: result.middlename,
+        postitle: result.postitle
+      };
 
       return response.value = {
         status: 'success',
@@ -103,10 +139,28 @@ export const useAuth = () => {
       };
 
     }
-
-
-
   }
 
-  return { user, login, logout, fetchUserDetails };
+  // Helper Functions
+
+  function check_position(position: string): string {
+    const positionsMap = new Map<string, string[]>([
+      ['0', ['medical specialist', 'medical officer']], // Doctor
+      ['1', ['programmer', 'computer programmer', 'computer maintenance technologist', 'information system analyst']], // Programmer
+      ['59', ['nutritionist', 'dietitian', 'dietician']], // Dietitian
+      ['60', ['food server', 'server']],
+      ['63', ['nurse', 'nursing', 'nurse i']], // Nurse
+    ]);
+
+    const lowerCasePosition = position?.toLowerCase();
+    for (const [code, titles] of positionsMap) {
+      if (titles.some(title => lowerCasePosition?.includes(title))) {
+        return code;
+      }
+    }
+
+    return '';
+  }
+
+  return { user, login, logout, fetchUserDetails, check_position };
 };

@@ -114,3 +114,14 @@ export interface doctorsOrderFormInterface {
     snsDescription: string | null,
     remarks: string | null
 }
+
+
+export interface interface_userFetchResult {
+    employeeid: string,
+    user_name: string,
+    user_level: string,
+    firstname: string,
+    lastname: string,
+    middlename: string,
+    postitle: string
+}

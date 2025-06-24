@@ -65,7 +65,6 @@ async function handleFetchSuccess(patient) {
     title: Number(patient.patage) < 18 ? 'Pedia' : 'Adult',
     severity: 'warn'
   });
-  console.log('Store: ', patientStore.patientTags);
   
   //maternalStatus.value = await useFetchReproductiveStatus(patient?.enccode);
 
@@ -111,14 +110,10 @@ async function onSuccessSubmit() {
       </section>
 
       <section class="card diet-history">
-        <DietHistory 
-          :hpercode="patientsDietResult.hpercode"
-        />
+        <DietHistory :hpercode="patientsDietResult.hpercode"/>
       </section>
-      
-      
-
     </div> <!-- End of Main Content Area -->
+
     <Dialog v-model:visible="toggleDietOrder" 
         :style="{ width: '95vw', height: '95vh' }" 
         :draggable="false" 

@@ -10,22 +10,41 @@ const password = ref('');
 const checked = ref(false);
 const errorObject = ref();
 const loading = ref(false);
+const rememberme = ref(false);
 
 definePageMeta({
     layout: false,
 });
 
+interface user_cookie {
+        employeeid: string;
+        user_name: string;
+        user_level: keyof typeof allowedPages | '';
+        firstname: string;
+        lastname: string;
+        middlename: string;
+        postitle: string;
+}
+
+const allowedPages = {
+    '1': ['/admin', '/doctor', '/dietary', '/foodserver', '/nurse'],
+    '0': ['/doctor'],
+    '59': ['/dietary', '/foodserver'],
+    '60': ['/foodserver'],
+    '63': ['/nurse'],
+}
+
 const userLoginRequest = async ()  => {
     loading.value = true;
     const response = await useAuth().login({ 
         username: username.value,
-        password: password.value
-    });
+        password: password.value,
+    }, rememberme.value);
 
     if (response.status === 'success') {
         handleSuccessfulLogin();
         loading.value = false;
-
+        router
     } else { 
         handleErrorLogin(response);
         loading.value = false;
@@ -34,13 +53,23 @@ const userLoginRequest = async ()  => {
 };
 
 
-const handleSuccessfulLogin = async ()  => {
+const handleSuccessfulLogin = async () => {
 
     // Fetch user data & save to Cookies
     const response = await useAuth().fetchUserDetails();
 
+    const user = useCookie<user_cookie>('authUser');
+    const user_level = user.value?.user_level;
+
     if (response.status === 'success') {
-        router.push('/dietary');
+
+        if (user_level === undefined || user_level === null || user_level === '') {
+            toast.add({ severity: 'error', summary: 'Login Error', detail: 'User level is not defined. Please contact support.', life: 5000 });
+            return;
+        }
+
+        router.push(allowedPages[user_level][0]);
+
     } else { 
         handleErrorLogin(response);
     }
@@ -57,7 +86,7 @@ const handleErrorLogin = async (result: any) => {
 </script>
 
 <template>
-    <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
+    <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-[100vh] min-w-[95vw] overflow-hidden">
         <FloatingConfigurator />
         <Toast />
         <div class="flex flex-col items-center justify-center">
@@ -94,8 +123,8 @@ const handleErrorLogin = async (result: any) => {
 
                         <div class="flex items-center justify-between mt-2 mb-8 gap-8">
                             <div class="flex items-center">
-                                <Checkbox v-model="checked" id="rememberme1" binary class="mr-2"></Checkbox>
-                                <label for="rememberme1">Remember me</label>
+                                <Checkbox v-model="rememberme" id="rememberme" binary class="mr-2"></Checkbox>
+                                <label for="rememberme">Remember me</label>
                             </div>
                             <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
                         </div>

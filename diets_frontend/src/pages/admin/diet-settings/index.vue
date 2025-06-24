@@ -56,14 +56,14 @@ const formatDietTypes = () => {
 
 const updateDietType = () => { 
 
-  console.log('Selected Diet Type: ', selectedDietType.value);
+  
   
 }
 
 const confirmSave = (event:any) => { 
   confirm.require({
     target: event.currentTarget,
-    message: `Are you sure you want to updated this Diet Type?`,
+    message: `Are you sure you want to update this Diet Type?`,
     icon: 'pi pi-exclamation-triangle',
     rejectProps: {
       label: 'Cancel',

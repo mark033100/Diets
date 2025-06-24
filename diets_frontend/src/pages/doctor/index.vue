@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Doctors Page</h1>
+    <SearchPatients />
   </div>
 </template>
 

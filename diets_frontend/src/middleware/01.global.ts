@@ -2,7 +2,7 @@ import { useAuth } from '~/composables/authentication/useAuth';
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
 
-    const grantAllAccess = true;
+    const grantAllAccess = false;
     if (grantAllAccess) {
         return
     }
@@ -13,8 +13,18 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         status: 'success' | 'error'
     }
 
+    interface user_cookie {
+        employeeid: string;
+        user_name: string;
+        user_level: keyof typeof allowedPages;
+        firstname: string;
+        lastname: string;
+        middlename: string;
+        postitle: string;
+    }
+
     // List of pages that should be excluded from the middleware
-    const exludedPages = [
+    const excludedPages = [
         '/auth/login',
         '/error',
         '/auth/access',
@@ -28,24 +38,55 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         '63': ['/nurse'],
     }
 
+    if (excludedPages.includes(to.path)) {
 
-    // 1️⃣ Check If the page is in the exludedPages array
-    if (exludedPages.includes(to.path)) {
-        return
+        const user_auth_cookie = useCookie('authToken');
+
+        if (user_auth_cookie.value) {
+
+            const user = useCookie<user_cookie | null>('authUser');
+            const userLevel = user.value?.user_level;
+
+            if (!userLevel) {
+                clear_cookies();
+                return navigateTo('/auth/login');
+            }
+
+            return navigateTo(allowedPages[userLevel][0]);
+        }
+
+    } else {
+
+        const user_auth_cookie = useCookie('authToken');
+
+        if (!user_auth_cookie.value) {
+            clear_cookies();
+            return navigateTo('/auth/login');
+        }
+
+        const user = useCookie<user_cookie | null>('authUser');
+        const userLevel = user.value?.user_level;
+
+        if (!userLevel) {
+            clear_cookies();
+            return navigateTo('/auth/login');
+        }
+
+        // If path is not in allowed pages for the user level, redirect to the first allowed page
+        if (!allowedPages[userLevel].includes(to.path)) {
+
+            return navigateTo(allowedPages[userLevel][0]);
+        }
+
     }
 
-    // 2️⃣ Check if the user is authenticated
 
-    const userAuth = await useAuth().fetchUser() as interface_userAuth;
+    function clear_cookies() {
+        const user_auth_cookie = useCookie('authToken');
+        const user = useCookie<user_cookie | null>('authUser');
 
-    // 3️⃣ If the user is not authenticated, redirect to the login page
-    if (userAuth.status === 'error') {
-        return navigateTo('/auth/login');
-    }
-
-    // 4️⃣ Check if the user is allowed to access the page
-    if (!allowedPages[userAuth.data.user_level].some(path => to.path.startsWith(path))) {
-        return navigateTo(allowedPages[userAuth.data.user_level][0]);
+        user_auth_cookie.value = null;
+        user.value = null;
     }
 
 

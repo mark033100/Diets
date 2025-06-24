@@ -130,21 +130,12 @@ const onDietType1Change = () => {
 const onClickSubmit = () => { 
 
   const inputs = <doctorsOrdeInputInterface>{ ...selected, age: props.age, gender: props.gender };
-  
   const { isValid, errors } = useDoctorsOrderValidation(inputs);
   
   if (isValid) {
-
     submitForm();
-
   } else {
-
-    toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: 'Please fill in all required fields.',
-      life: 3000
-    });
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill in all required fields.', life: 3000});
   }
 }
 
@@ -306,6 +297,10 @@ onBeforeUnmount(() => {
                 <label> Dinner: 4:00 PM </label>
               </li>
             </ul>
+          </section>
+
+          <section>
+            <label class="font-bold mt-2"> Doctors Order Drafts </label>
           </section>
       </div>
 

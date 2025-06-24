@@ -154,7 +154,6 @@ const confirm_DeleteNutritionScreening = (event, id) => {
       outlined: true
     },
     accept: () => {
-      console.log('ID: ', id);
       onDelete_NutritionScreening(id);
     },
     reject: () => {

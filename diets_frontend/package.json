@@ -31,6 +31,7 @@
   "devDependencies": {
     "@iconify-json/fluent": "^1.2.23",
     "@iconify-json/healthicons": "^1.2.7",
+    "@iconify-json/ic": "^1.2.2",
     "@primevue/nuxt-module": "^4.2.2",
     "autoprefixer": "^10.4.19",
     "nitro-public-module": "^0.1.2",
