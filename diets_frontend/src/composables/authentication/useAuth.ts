@@ -50,7 +50,7 @@ export const useAuth = () => {
   const logout = async () => {
 
     if (!authTokenCookie.value) {
-      console.log('No auth token found, user is not logged in');
+
       return response.value = {
         status: 'error',
         title: 'Logout failed',
