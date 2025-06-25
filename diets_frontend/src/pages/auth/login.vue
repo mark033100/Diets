@@ -19,20 +19,20 @@ definePageMeta({
 interface user_cookie {
         employeeid: string;
         user_name: string;
-        user_level: keyof typeof allowedPages | '';
+        user_level: keyof typeof ALLOWED_PAGES | '';
         firstname: string;
         lastname: string;
         middlename: string;
         postitle: string;
 }
 
-const allowedPages = {
+const ALLOWED_PAGES = {
     '1': ['/admin', '/doctor', '/dietary', '/foodserver', '/nurse'],
     '0': ['/doctor'],
     '59': ['/dietary', '/foodserver'],
     '60': ['/foodserver'],
     '63': ['/nurse'],
-}
+} as const;
 
 const userLoginRequest = async ()  => {
     loading.value = true;
@@ -68,7 +68,7 @@ const handleSuccessfulLogin = async () => {
             return;
         }
 
-        router.push(allowedPages[user_level][0]);
+        router.push(ALLOWED_PAGES[user_level][0]);
 
     } else { 
         handleErrorLogin(response);

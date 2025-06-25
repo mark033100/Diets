@@ -96,8 +96,8 @@ const isNutrientsFatRequired = computed(() => !!(patient_age > 18 && selected.nu
 const isFeedingModeRequired = computed(() => !!selected.feedingMode === null);
 const isFeedingDurationRequired = computed(() => !!selected.feedingDuration === null);
 const isFeedingFrequencyRequired = computed(() => !!selected.feedingFrequency === null);
-const isAllergyTypeRequired = computed(() => !!selected.allergyType === null);
-const isAllergySubtypeRequired = computed(() => !!selected.allergySubtype === null);
+const isAllergyTypeRequired = computed(() => selected.allergyType === null ? true : false);
+const isAllergySubtypeRequired = computed(() => selected.allergyType === '10' || selected.allergyType === '11' ? selected.allergySubtype === null ? true : false : false);
 const isSnsFrequencyRequired = computed(() => !!(selected.snsType && selected.snsFrequency === null));
 const isSnsDescriptionRequired = computed(() => !!(selected.snsType && selected.snsDescription === null));
 
@@ -264,6 +264,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   clearSelectedStorage();
 })
+
 
 </script>
 <template>
@@ -482,7 +483,7 @@ onBeforeUnmount(() => {
                   optionValue="id"
                   @change="onAllergyChange"
                 /> 
-                <label for="allergies"> Allergies:</label> 
+                <label for="allergies"> Allergies: {{selected.allergySubtype}} </label> 
               </IftaLabel>
 
               <IftaLabel v-if="selected.allergyType === '10'"> 
