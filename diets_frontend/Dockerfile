@@ -48,7 +48,7 @@ RUN npm ci
 COPY . .
 
 # Expose the port on which the application will run
-EXPOSE 3000
+EXPOSE 80
 
 # Start the application in development mode
 CMD ["npm", "run", "dev", "--", "--host"] 

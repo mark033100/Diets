@@ -8,7 +8,22 @@
       <p class="text-sm"> Overview of Admin Dashboard</p>
     </section>
 
-    
+    <div class="flex gap-4">
+      <div class="card">
+        <h5 class=""> Admitted Patients </h5>
+        <div>
+          <p class="text-2xl font-bold"> 0 </p>
+          <p class="text-sm"> Total Admitted Patients </p>
+        </div>
+
+      </div>
+      <div class="card">
+
+      </div>
+      <div class="card">
+
+      </div>
+    </div>
 
 
 

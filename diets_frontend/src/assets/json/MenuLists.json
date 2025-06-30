@@ -1,5 +1,5 @@
 {
-    "DoctorDietMenu": [
+    "DefaultMenuList": [
         {
             "label": "Home",
             "items": [
@@ -7,6 +7,18 @@
                     "label": "Dashboard",
                     "icon": "healthicons:home",
                     "to": "/"
+                }
+            ]
+        }
+    ],
+    "DoctorDietMenu": [
+        {
+            "label": "Home",
+            "items": [
+                {
+                    "label": "Dashboard",
+                    "icon": "healthicons:home",
+                    "to": "/nurse"
                 }
             ]
         },
@@ -46,6 +58,16 @@
             "label": "Services",
             "items": [
                 {
+                    "label": "General Settings",
+                    "icon": "healthicons:ui-settings",
+                    "to": "/admin/general-settings"
+                },
+                {
+                    "label": "Diet Settings",
+                    "icon": "fluent:food-28-filled",
+                    "to": "/admin/diet-settings"
+                },
+                {
                     "label": "Users Settings",
                     "icon": "healthicons:person",
                     "to": "/"
@@ -56,7 +78,66 @@
                     "to": "/"
                 },
                 {
-                    "label": "Diet Settings",
+                    "label": "Dietary Settings",
+                    "icon": "fluent:building-lighthouse-16-filled",
+                    "to": "/"
+                },
+                {
+                    "label": "Logs",
+                    "icon": "material-symbols:lists-rounded",
+                    "to": "/admin/logs-settings"
+                }
+            ]
+        }
+    ],
+    "NurseMenuList": [
+        {
+            "label": "Home",
+            "items": [
+                {
+                    "label": "Dashboard",
+                    "icon": "healthicons:home",
+                    "to": "/"
+                }
+            ]
+        },
+        {
+            "label": "Services",
+            "items": [
+                {
+                    "label": "Patient Search",
+                    "icon": "ic:sharp-person-search",
+                    "to": "/nurse/search-patient"
+                },
+                {
+                    "label": "Assessments",
+                    "icon": "healthicons:ui-settings",
+                    "to": "/admin/diet-settings"
+                }
+            ]
+        }
+    ],
+    "DietaryMenuList": [
+        {
+            "label": "Home",
+            "items": [
+                {
+                    "label": "Dashboard",
+                    "icon": "healthicons:home",
+                    "to": "/"
+                }
+            ]
+        },
+        {
+            "label": "Services",
+            "items": [
+                {
+                    "label": "Patient Search",
+                    "icon": "ic:sharp-person-search",
+                    "to": "/dietitian/search-patient"
+                },
+                {
+                    "label": "Assessments",
                     "icon": "healthicons:ui-settings",
                     "to": "/admin/diet-settings"
                 }

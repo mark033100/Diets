@@ -15,8 +15,8 @@ const toggleDietOrder = ref(false);
 
 // Extract patient data from route
 const { patient } = useRoute().params;
-const enccode = patient.split('+')[0];
-
+const enccode = decodeURIComponent(patient.split('+')[0]);
+console.log('Patient ENCCODE:', enccode);
 // Reactive state
 const patientsDietResult = ref(null);
 const maternalStatus = ref();
@@ -30,6 +30,7 @@ async function fetchPatientDietData() {
   const result = await useFetchPatientDietData(enccode);
 
   if (result.status === 'success') {
+    console.log('Result Diet Data:', result.data);
     handleFetchSuccess(result?.data[0]);
   } else {
     handleError('Server Error', result.error);
@@ -81,7 +82,7 @@ async function onSuccessSubmit() {
   <div> <!-- Content Area -->
     <section class="card flex justify-between items-center">
       <div>
-        <h4 class="m-0">Patient Information </h4>
+        <h4 class="m-0">Patient Diet Information </h4>
         <p class="text-xs">General Admission Data and Diet Data of the Patient.</p>
       </div>
       <div>

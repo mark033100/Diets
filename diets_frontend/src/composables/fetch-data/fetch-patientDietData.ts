@@ -5,7 +5,12 @@ export const useFetchPatientDietData = async (enccode: string) => {
 
   try {
 
-    const patientsAdmittedResults = await $fetch(`/api/patients-api/patients-dietData/${enccode}`);
+    const patientsAdmittedResults = await $fetch(`/api/patients-api/patients-dietData/fetch`, {
+      params: {
+        enccode
+      }
+    });
+
     result.value = {
       status: 'success',
       title: 'Patients Diet fetched successfully',

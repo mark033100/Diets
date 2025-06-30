@@ -114,7 +114,8 @@ const formatFilterOptions = (array) => {
 
 function onRowSelect(event) { 
   emit('close');
-  router.push('/doctor/' + event.data.enccode + '+' + event.data.hpercode);
+  const enccode = encodeURIComponent(event.data.enccode);
+  router.push('/doctor/' + enccode + '+' + event.data.hpercode);
 }
 
 </script>
