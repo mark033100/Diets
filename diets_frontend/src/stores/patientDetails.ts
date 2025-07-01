@@ -1,3 +1,4 @@
+import { get } from '@vueuse/core'
 import { defineStore } from 'pinia'
 
 export const useMyPatientDetailsStore = defineStore('myPatientDetailsStore', {
@@ -14,6 +15,10 @@ export const useMyPatientDetailsStore = defineStore('myPatientDetailsStore', {
     },
     clearTags() {
       this.patientTags = []
+    },
+
+    getPatientTags() {
+      return get(this.patientTags)
     }
   }
 })

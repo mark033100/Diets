@@ -303,6 +303,17 @@ onBeforeUnmount(() => {
           <section>
             <label class="font-bold mt-2"> Doctors Order Drafts </label>
           </section>
+
+          <section class="flex flex-grow items-end justify-between"> 
+            <Button severity="secondary" raised text @click="onClickClearForm">
+              <Icon name="mdi:delete-forever" class="text-2xl text-red-500" />
+              <span class="text-sm"> Clear Form </span>
+            </Button>
+            <Button raised @click="onClickSubmit">
+              <Icon name="mdi:content-save-move" class="text-2xl" />
+              <span class="text-sm font-bold"> Issue Diet Order </span>
+            </Button>
+          </section>
       </div>
 
       <div class="doctors-main-form-container-2">
@@ -573,17 +584,6 @@ onBeforeUnmount(() => {
             </div>
           </Divider>
           <Textarea v-model="selected.remarks" class="mt-2 ml-10"/>
-        </section>
-
-        <section class="mt-10 flex items-center justify-end gap-12 "> 
-          <Button severity="secondary" raised text @click="onClickClearForm">
-            <Icon name="mdi:delete-forever" class="text-2xl text-red-500" />
-            <span class="text-sm"> Clear Form </span>
-          </Button>
-          <Button raised @click="onClickSubmit">
-            <Icon name="mdi:content-save-move" class="text-2xl" />
-            <span class="text-sm font-bold"> Issue Diet Order </span>
-          </Button>
         </section>
       </div>
     </div>

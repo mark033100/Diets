@@ -1,17 +1,15 @@
 
 export const useFetchPatientDietData = async (enccode: string) => {
 
-  const result = ref();
+
+
+  const formattedEnccode = encodeURIComponent(enccode);
 
   try {
 
-    const patientsAdmittedResults = await $fetch(`/api/patients-api/patients-dietData/fetch`, {
-      params: {
-        enccode
-      }
-    });
+    const patientsAdmittedResults = await $fetch(`/api/patients-api/patients-dietData/${formattedEnccode}`);
 
-    result.value = {
+    return {
       status: 'success',
       title: 'Patients Diet fetched successfully',
       description: 'You have successfully fetched patient diet data',
@@ -21,7 +19,7 @@ export const useFetchPatientDietData = async (enccode: string) => {
 
   } catch (error) {
 
-    result.value = {
+    return {
       status: 'error',
       title: 'Patients Diet fetch failed',
       description: 'Something went wrong during patient diet data fetch',
@@ -29,8 +27,6 @@ export const useFetchPatientDietData = async (enccode: string) => {
       data: null
     };
   }
-
-  return result.value;
 
 }
 

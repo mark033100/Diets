@@ -1,15 +1,14 @@
 export default defineEventHandler(async (event) => {
 
-  const params = event.context.params;
+  const { enccode } = getRouterParams(event)
+  const decoded = decodeURIComponent(enccode)
 
   const { BACKEND_API } = useRuntimeConfig();
-  const uri = `${BACKEND_API}/api/patient/`;
+  const uri = `${BACKEND_API}/api/patient/${decoded}`;
 
-  // const result = await $fetch(uri, {
-  //   params: {
-  //     enccode: params?.enccode,
-  //   }
-  // });
+  const result = await $fetch(uri, {
+    method: 'GET',
+  });
 
-  return 'test 2';
+  return result;
 })

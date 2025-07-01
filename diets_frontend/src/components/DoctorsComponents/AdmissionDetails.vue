@@ -14,9 +14,20 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['toggleDietOrder'])
+const tags = patientStore.getPatientTags()
 
-const patientTags = computed(() => patientStore.patientTags);
+const patientTags = patientStore.getPatientTags();
+console.log('Patient Tags:', patientTags);
 
+onBeforeMount(() => {
+  patientStore.getPatientTags()
+  if (!props.patientsDietResult) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Patient data not found',
+    });
+  }
+});
 
 </script>
 

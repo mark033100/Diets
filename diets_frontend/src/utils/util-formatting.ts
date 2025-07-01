@@ -8,7 +8,7 @@ export function formatAge(age: number) {
 
 export function formatDate(value: number) {
 
-  if (!value) return 'N/A';
+  if (!value) return null;
 
   const date = new Date(value);
   const year = date.getFullYear();

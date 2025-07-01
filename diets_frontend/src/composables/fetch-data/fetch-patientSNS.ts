@@ -1,4 +1,4 @@
-export const usePatientSNS = async (docointkey: any) => {
+export const useFetchPatientSNS = async (docointkey: any) => {
 
   const result = ref();
   const runtimeconfig = useRuntimeConfig();
@@ -7,7 +7,7 @@ export const usePatientSNS = async (docointkey: any) => {
 
   try {
 
-    const dietTypes = await $fetch(`${backendAPI}/api/getPatientOns/${docointkey}`, {
+    const dietTypes = await $fetch(`${backendAPI}/api/doctors-orders-sns/${docointkey}`, {
       method: 'GET',
       Authorization: `Bearer ${localStorage.getItem('auth-token')}`
     });
