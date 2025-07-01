@@ -123,6 +123,18 @@
         border-radius: var(--content-border-radius);
         background-color: var(--surface-card);
 
+        .detail-sections {
+            padding: 2px
+        }
+
+        .buttons-section {
+            display: flex;
+            gap: 1rem;
+            height: 100%;
+            align-items: end;
+            justify-content: space-between;
+            gap: 1rem;
+        }
     }
 
     .doctors-main-form-container-2 {
@@ -224,11 +236,25 @@
         flex-grow: 1;
         display: flex;
         flex-direction: row;
-        gap: 3rem;
+        gap: 2rem;
         padding: 1rem;
         border: 1px dashed var(--surface-border);
         border-radius: var(--content-border-radius);
         background-color: var(--surface-card);
+        flex-wrap: wrap;
+
+        .detail-sections {
+            padding: 2px
+        }
+
+        .buttons-section {
+            display: flex;
+            gap: 1rem;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
 
     }
 

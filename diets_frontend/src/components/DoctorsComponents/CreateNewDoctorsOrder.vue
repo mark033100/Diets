@@ -273,7 +273,8 @@ onBeforeUnmount(() => {
     <div class="doctors-main-form-wrapper">
       
       <div class="doctors-main-form-container-1">
-          <section>
+
+          <section class="detail-sections">
             <label class="font-bold"> Reminders</label>
             <ul class="flex flex-col gap-2 mt-2" v-for="reminder in reminders">
               <li class="flex items-start gap-2">
@@ -282,6 +283,7 @@ onBeforeUnmount(() => {
               </li>
             </ul>
           </section>
+
           <section>
             <label class="font-bold mt-2"> Diet Order Cut Off Time</label>
             <ul class="text-sm flex flex-col gap-2 mt-2">
@@ -304,7 +306,7 @@ onBeforeUnmount(() => {
             <label class="font-bold mt-2"> Doctors Order Drafts </label>
           </section>
 
-          <section class="flex flex-grow items-end justify-between"> 
+          <section class="buttons-section"> 
             <Button severity="secondary" raised text @click="onClickClearForm">
               <Icon name="mdi:delete-forever" class="text-2xl text-red-500" />
               <span class="text-sm"> Clear Form </span>
@@ -651,6 +653,6 @@ onBeforeUnmount(() => {
         </Button>
       </div>
     </Dialog>
-  
+    
   </div>
 </template>

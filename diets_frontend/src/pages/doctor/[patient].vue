@@ -147,10 +147,7 @@ async function onSuccessSubmit() {
         <DietHistory :hpercode="patientsDietResult.hpercode" />
       </section>
     </div>
-    
     <!-- End of Main Content Area -->
-    
-    
 
     <Dialog v-model:visible="toggle_diet_order" 
         :style="{ width: '95vw', height: '95vh' }" 
