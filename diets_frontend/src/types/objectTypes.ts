@@ -78,6 +78,7 @@ export interface cookieUserInterface {
     lastname: string,
     middlename: string,
     posttitle: string,
+    maxAge: number
 }
 
 export interface nutritionScreeningInterface {

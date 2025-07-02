@@ -8,7 +8,7 @@ import type { interface_userFetchResult } from '~/types/objectTypes';
 export const useAuth = () => {
   const user = useState('user', () => null);
   const response = ref();
-  const authTokenCookie = useCookie('authToken');
+  const authTokenCookie = useCookie('authToken', { maxAge: 60 * 60 * 24 });
   const authUserCookie = useCookie<interface_userFetchResult | null>('authUser');
 
   const login = async (credentials: { username: string; password: string }, rememberMe: boolean) => {
@@ -19,12 +19,11 @@ export const useAuth = () => {
         body: credentials
       });
 
-      const cookieOptions = rememberMe
-        ? { maxAge: 60 * 60 * 24 * 30 }    // 30 days
-        : { maxAge: 60 * 60 * 24 }; // 1 day
-
-      const authTokenCookie = useCookie('authToken', cookieOptions);
-      authTokenCookie.value = result.token;
+      if (rememberMe) {
+        useCookie('authToken', { maxAge: 60 * 60 * 24 * 30 }).value = result.token;
+      } else {
+        authTokenCookie.value = result.token;
+      }
 
       return response.value = {
         status: 'success',

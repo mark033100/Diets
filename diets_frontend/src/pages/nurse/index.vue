@@ -1,10 +1,6 @@
 <template>
   <div>
-    <div class="card">
-      <div>
-        <h1>Guest Page</h1>
-      </div>
-    </div>
+    <p>Page NURSE</p>
   </div>
 </template>
 

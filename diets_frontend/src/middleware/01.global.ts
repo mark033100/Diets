@@ -20,7 +20,8 @@ const ALLOWED_PAGES = {
     '1': '/admin',
     '0': '/doctor',
     '59': '/dietary',
-    '60': '/foodserver'
+    '60': '/foodserver',
+    '63': '/nurse'
 } as const;
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
@@ -67,14 +68,14 @@ function handleProtectedPage(to: { path: string }) {
     const user = useCookie<UserCookie | null>('authUser').value;
     const userLevel = user?.user_level;
 
-    if (!userLevel) { //------------------------------------------------------------- 2️⃣ If no user level found: Clear cookies and redirect to login
+    if (!userLevel) { //------------------------------------------------------------ 2️⃣ If no user level found: Clear cookies and redirect to login
         clearCookies();
         return navigateTo('/auth/login');
     }
 
-    const allowed_page = ALLOWED_PAGES[userLevel] || '/guest'; // ------------------- 3️⃣ If the page being accessed is part of allowed pages
+    const allowed_page = ALLOWED_PAGES[userLevel]; // ------------------------------ 3️⃣ If the page being accessed is part of allowed pages
 
-    if (!to.path.startsWith(allowed_page)) { // ------------------------------------- 4️⃣ If the page being accessed is not part of allowed pages: Redirect to allowed page
+    if (!to.path.startsWith(allowed_page)) { // ------------------------------------ 4️⃣ If the page being accessed is not part of allowed pages: Redirect to allowed page
         return navigateTo(allowed_page);
     }
 }

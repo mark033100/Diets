@@ -12,8 +12,7 @@ const { AdminMenuList, DietaryMenuList, NurseMenuList, DefaultMenuList } = MenuL
 const menu_list_options = {
     '1': AdminMenuList,
     '63': NurseMenuList,
-    '59': DietaryMenuList,
-    '-1': DefaultMenuList
+    '59': DietaryMenuList
 };
 
 const menu_list = ref(menu_list_options[user_level] || DefaultMenuList);

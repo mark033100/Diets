@@ -18,11 +18,12 @@ const togglePatientSearchDialog = () => {
 const currentRoute = router.currentRoute.value.fullPath.split('/').filter(Boolean);
 const isDoctorsPage = currentRoute[0] === 'doctor';
 
-if(isDoctorsPage) {
-    setMenuMode('overlay');
-}
+// if(isDoctorsPage) {
+//     setMenuMode('overlay');
+// }
 
 const toggleUserInfo = (event) => {
+    
     showUserInfo.value.toggle(event);
 };
 
@@ -31,7 +32,7 @@ const toggleUserInfo = (event) => {
 <template>
     <div class="layout-topbar">
         <div class="layout-topbar-logo-container">
-            <button class="layout-menu-button layout-topbar-action" @click="onMenuToggle" v-if="!isDoctorsPage">
+            <button class="layout-menu-button layout-topbar-action" @click="onMenuToggle" >
                 <i class="pi pi-bars"></i>
             </button>
             <router-link to="/" class="layout-topbar-logo">
@@ -107,7 +108,7 @@ const toggleUserInfo = (event) => {
         </div>
 
         <Dialog v-model:visible="patientSearchModal" header="Patient Search" modal dismissableMask>
-            <SearchPatients @close="patientSearchModal = false"/>
+            <SearchPatients @close="patientSearchModal = false" v-if="patientSearchModal"/>
         </Dialog>
     </div>
 </template>

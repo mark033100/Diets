@@ -134,12 +134,12 @@
                 {
                     "label": "Patient Search",
                     "icon": "ic:sharp-person-search",
-                    "to": "/dietitian/search-patient"
+                    "to": "/dietary"
                 },
                 {
                     "label": "Assessments",
                     "icon": "healthicons:ui-settings",
-                    "to": "/admin/diet-settings"
+                    "to": "/dietary"
                 }
             ]
         }

@@ -5,9 +5,16 @@ import AppSidebar from './AppSidebar.vue';
 import AppTopbar from './AppTopbar.vue';
 import {useLayout} from "~/layouts/composables/layout.js";
 
-const { layoutConfig, layoutState, isSidebarActive, resetMenu } = useLayout();
+const { layoutConfig, layoutState, isSidebarActive, resetMenu, setMenuMode } = useLayout();
 
 const outsideClickListener = ref(null);
+// const router = useRouter();
+// const currentRoute = router.currentRoute.value.fullPath.split('/').filter(Boolean);
+// const isDoctorsPage = currentRoute[0] === 'doctor';
+
+// if(isDoctorsPage) {
+//     setMenuMode('overlay');
+// }
 
 watch(isSidebarActive, (newVal) => {
     if (newVal) {

@@ -22,7 +22,7 @@ const filterObject = ref({
   allergy: []
 });
 
-onBeforeMount(() => {
+onMounted(() => {
   getAdmittedPatients();
 });
 
@@ -50,7 +50,6 @@ function setFilterOptions(data) {
   
   dietTypes.value = [...new Set(data.map(item => item.dietname))].map(item => ({ 'dietname': item}));
   wardTypes.value = [...new Set(data.map(item => item.wardname))].map(item => ({ 'wardname': item}));
-
 }
 
 
@@ -63,7 +62,6 @@ async function filterTable() {
     ((filterObject.value.hpercode === null || filterObject.value.hpercode === '') || patient.hpercode.includes(filterObject.value.hpercode)) && 
     ((filterObject.value.patient_name === null || filterObject.value.patient_name === '' ) || patient.patname.toLowerCase().includes(filterObject.value.patient_name.toLowerCase()))
   );
-
 }
 
 
@@ -123,7 +121,6 @@ function onRowSelect(event) {
 <template>
   <div>
     <Panel header="Filter Search">
-      
       <div class=" mt-6 flex gap-2 ">
         <FloatLabel variant="on" class="w-full" >
           <InputText v-model="filterObject.hpercode" type="text" class="w-full p-column-filter border-0 border-b border-black shadow-none rounded-none focus:outline-none"  id="on_hospital_number"/>
@@ -200,7 +197,7 @@ function onRowSelect(event) {
       </div>
     </Panel>
 
-    <div class="container mx-auto p-4 w-full border">
+    <div class="container mx-auto p-4 w-full border" v-if="!loading">
       <DataTable :value="filteredPatients"
         :loading="loading"
         dataKey="id"
