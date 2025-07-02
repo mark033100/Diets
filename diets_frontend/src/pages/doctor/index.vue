@@ -5,7 +5,9 @@
 </template>
 
 <script lang="ts" setup>
-
+definePageMeta({
+  middleware: 'middleware-doctors'
+})
 </script>
 
 <style>
