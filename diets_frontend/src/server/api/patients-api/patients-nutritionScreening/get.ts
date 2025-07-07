@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
 
     const uri = `${BACKEND_API}/api/patient-nutrition/${enccode}`;
     const result = await $fetch(uri);
-    return uri;
+    return result;
 
   } catch (error) {
 

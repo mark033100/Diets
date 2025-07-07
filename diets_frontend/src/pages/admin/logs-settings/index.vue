@@ -13,10 +13,8 @@ const maintenanceMode = ref(false);
 const confirm_settings_toggle_maintenance = () => {
     if (maintenanceMode.value) {
         // Logic to handle enabling maintenance mode
-        console.log('Maintenance mode enabled');
     } else {
         // Logic to handle disabling maintenance mode
-        console.log('Maintenance mode disabled');
     }
 };
 

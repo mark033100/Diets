@@ -112,7 +112,7 @@
                 {
                     "label": "Assessments",
                     "icon": "healthicons:ui-settings",
-                    "to": "/admin/diet-settings"
+                    "to": "/nurse"
                 }
             ]
         }

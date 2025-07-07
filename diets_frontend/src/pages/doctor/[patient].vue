@@ -14,6 +14,11 @@ import Loader_Egg from '~/components/misc/loaders/Loader_Egg.vue';
 // --> STORES
 import { useMyPatientDetailsStore } from '~/stores/patientDetails';
 
+
+definePageMeta({
+  middleware: 'doctors-middleware'
+})
+
 const patient_store = useMyPatientDetailsStore();
 const toast = useToast();
 const toggle_diet_order = ref(false);

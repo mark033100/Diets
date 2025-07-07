@@ -4,7 +4,9 @@ export const useFetchPatientNutritionAssessment = async (enccode: string) => {
 
   try {
 
-    const fetchedData = await $fetch(`/api/patients-api/patients-nutritionAssessment/${enccode}`);
+    const fetchedData = await $fetch(`/api/patients-api/patients-nutritionAssessment/get`, {
+      params: { enccode: enccode }
+    });
 
     return result.value = {
       status: 'success',

@@ -1,6 +1,7 @@
 <script setup>
 import { useFetchPatientDietHistory } from '~/composables/fetch-data/fetch-patientDietHistory';
 import errorInlineMessage from '~/components/customComponents/errors/errorInlineMessage.vue';
+import Loader_Egg from '../misc/loaders/Loader_Egg.vue';
 import { FilterMatchMode } from '@primevue/core/api';
 
 
@@ -50,8 +51,7 @@ onUnmounted(() => {
 
 <template>
   <div>
-    <div v-if="status === 'pending'">Loading...</div>
-    <div v-else-if="error"> 
+    <div v-if="error"> 
       <errorInlineMessage :errorObject="setError()"/>
     </div>
     <div v-else>
@@ -80,7 +80,10 @@ onUnmounted(() => {
         </template>
         <template #loading>
           <div class="w-full text-center">
-            Loading...
+            <div class="flex flex-col items-center justify-center">
+              <Loader_Egg />
+              <p class="ml-6 mt-4 font-bold">Loading...</p>
+            </div>
           </div>
         </template>
         <Column header="Date">
@@ -133,7 +136,7 @@ onUnmounted(() => {
         <section>
           <Tag :severity="dietStatus.severity" :value=" dietStatus.name" class=" align-top" />
           <span class="font-bold text-xl"> 
-            {{ selectedDietHistory.dietgroup ? checkAcronym(selectedDietHistory.dietgroup) : '' }} - {{ selectedDietHistory.dietname ? selectedDietHistory.dietname : '' }} 
+            {{ selectedDietHistory.dietgroup ? checkAcronym(selectedDietHistory.dietgroup) : selectedDietHistory }} - {{ selectedDietHistory.dietname ? selectedDietHistory.dietname : '' }} 
           </span> 
           <span> {{ selectedDietHistory.dodate ? formatDate(selectedDietHistory.dodate) : '' }} | {{ selectedDietHistory.lname ? selectedDietHistory.lname : '' }}, {{ selectedDietHistory.fname ? selectedDietHistory.fname : '' }} </span>
         </section>

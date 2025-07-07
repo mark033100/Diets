@@ -42,6 +42,7 @@ const authUserCookie = useCookie<cookieUserInterface>('authUser');
 const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
 const toggleDietOrder = ref(false);
 const toggleUseSavedDietOrder = ref(false);
+const current_cut_off_time = ref();
 
 const draft = reactive({
   title: '',
@@ -86,17 +87,17 @@ const show_Add_DietType_Button = ref(false);
 const show_as_Enteral = computed(() => selected.dietCategory === '2' ? true : false);
 
 // Input Invalid Validation condition values
-const isDietType1Required = computed(() => selected.dietType1 === null);
-const isDietType2Required = computed(() => !!(selected.dietType1 === '46' && selected.dietType2 === null));
-const isDietCaloriesRequired = computed(() => !!selected.dietCalories === null);
-const isDietDilutionRequired = computed(() => !!(selected.dietCategory === '2' && selected.dietDilution === null));
+const isDietType1Required = computed(() => !selected.dietType1);
+const isDietType2Required = computed(() => selected.dietType1 === '46'  && !selected.dietType2);
+const isDietCaloriesRequired = computed(() => !selected.dietCalories);
+const isDietDilutionRequired = computed(() => selected.dietCategory === '2' && !selected.dietDilution);
 const isNutrientsProteinRequired = computed(() => !!(patient_age > 18 && selected.nutrientsProtein === null));
 const isNutrientsCarbsRequired = computed(() => !!(patient_age > 18 && selected.nutrientsCarbohydrates === null));
 const isNutrientsFatRequired = computed(() => !!(patient_age > 18 && selected.nutrientsFat === null));
-const isFeedingModeRequired = computed(() => !!selected.feedingMode === null);
-const isFeedingDurationRequired = computed(() => !!selected.feedingDuration === null);
-const isFeedingFrequencyRequired = computed(() => !!selected.feedingFrequency === null);
-const isAllergyTypeRequired = computed(() => selected.allergyType === null ? true : false);
+const isFeedingModeRequired = computed(() => !selected.feedingMode);
+const isFeedingDurationRequired = computed(() => !selected.feedingDuration);
+const isFeedingFrequencyRequired = computed(() => !selected.feedingFrequency);
+const isAllergyTypeRequired = computed(() => !selected.allergyType);
 const isAllergySubtypeRequired = computed(() => selected.allergyType === '10' || selected.allergyType === '11' ? selected.allergySubtype === null ? true : false : false);
 const isSnsFrequencyRequired = computed(() => !!(selected.snsType && selected.snsFrequency === null));
 const isSnsDescriptionRequired = computed(() => !!(selected.snsType && selected.snsDescription === null));
@@ -131,11 +132,10 @@ const onClickSubmit = () => {
 
   const inputs = <doctorsOrdeInputInterface>{ ...selected, age: props.age, gender: props.gender };
   const { isValid, errors } = useDoctorsOrderValidation(inputs);
-  
   if (isValid) {
     submitForm();
   } else {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill in all required fields.', life: 3000});
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill in all required fields.' , life: 3000});
   }
 }
 
@@ -256,9 +256,24 @@ const handleOnClick_CancelUseSavedDietOrder = () => {
   toggleUseSavedDietOrder.value = false;
 }
 
+const checkCurrentCutOffTime = () => {
+  const now = new Date();
+  const currentHour = now.getHours();
+  const currentMinutes = now.getMinutes();
+
+  if (currentHour < 4 || (currentHour === 4 && currentMinutes < 59)) {
+    return "Morning";
+  } else if (currentHour < 10 || (currentHour === 10 && currentMinutes < 59)) {
+    return "Lunch";
+  } else if (currentHour < 15 || (currentHour === 15 && currentMinutes < 59)) {
+    return "Dinner";
+  }
+}
+
 onMounted(() => { 
   computeNutrients();
   isSavedAvailable();
+  current_cut_off_time.value = checkCurrentCutOffTime();
 })
 
 onBeforeUnmount(() => {
@@ -274,48 +289,38 @@ onBeforeUnmount(() => {
       
       <div class="doctors-main-form-container-1">
 
-          <section class="detail-sections">
-            <label class="font-bold"> Reminders</label>
-            <ul class="flex flex-col gap-2 mt-2" v-for="reminder in reminders">
-              <li class="flex items-start gap-2">
-                <Icon name="ic:baseline-check" class="text-2xl bg-primary" />
-                <p class="text-sm"> {{ reminder }} </p>
-              </li>
-            </ul>
-          </section>
+        <section class="detail-sections">
+          <label class="font-bold"> Reminders</label>
+          <ul class="flex flex-col gap-2 mt-2" v-for="reminder in reminders">
+            <li class="flex items-start gap-2">
+              <Icon name="ic:baseline-check" class="text-2xl bg-primary" />
+              <p class="text-sm"> {{ reminder }} </p>
+            </li>
+          </ul>
+        </section>
 
-          <section>
-            <label class="font-bold mt-2"> Diet Order Cut Off Time</label>
-            <ul class="text-sm flex flex-col gap-2 mt-2">
-              <li class="flex items-center gap-2">
-                <Icon name="bi:cloud-sun-fill" class="text-2xl" />
-                <label> Breakfast: 5:00 AM </label>
-              </li>
-              <li class="flex items-center gap-2">
-                <Icon name="bi:sun-fill" class="text-2xl" />
-                <label> Lunch: 11:00 AM </label>
-              </li>
-              <li class="flex items-center gap-2">
-                <Icon name="bi:moon-fill" class="text-xl" />
-                <label> Dinner: 4:00 PM </label>
-              </li>
-            </ul>
-          </section>
+        <section>
+          <label class="font-bold mt-2"> Diet Order Cut Off Time {{  }}</label>
+          <ul class="text-sm flex flex-col gap-2 mt-2">
+            <li class="flex items-center gap-2">
+              <Icon name="bi:cloud-sun-fill" class="text-2xl" :class="current_cut_off_time === 'Morning' ? 'current_cut_off_time' : ''"/>
+              <label> Breakfast: 5:00 AM </label>
+            </li>
+            <li class="flex items-center gap-2" :class="current_cut_off_time === 'Lunch' ? 'current_cut_off_time' : ''">
+              <Icon name="bi:sun-fill" class="text-2xl" />
+              <label> Lunch: 11:00 AM </label>
+            </li>
+            <li class="flex items-center gap-2" :class="current_cut_off_time === 'Dinner' ? 'current_cut_off_time' : ''">
+              <Icon name="bi:moon-fill" class="text-xl" />
+              <label> Dinner: 4:00 PM </label>
+            </li>
+          </ul>
+        </section>
 
-          <section>
-            <label class="font-bold mt-2"> Doctors Order Drafts </label>
-          </section>
+        <section>
+          <label class="font-bold mt-2"> Doctors Order Drafts </label>
+        </section>
 
-          <section class="buttons-section"> 
-            <Button severity="secondary" raised text @click="onClickClearForm">
-              <Icon name="mdi:delete-forever" class="text-2xl text-red-500" />
-              <span class="text-sm"> Clear Form </span>
-            </Button>
-            <Button raised @click="onClickSubmit">
-              <Icon name="mdi:content-save-move" class="text-2xl" />
-              <span class="text-sm font-bold"> Issue Diet Order </span>
-            </Button>
-          </section>
       </div>
 
       <div class="doctors-main-form-container-2">
@@ -425,7 +430,7 @@ onBeforeUnmount(() => {
               </IftaLabel>
               <IftaLabel> 
                 <InputText v-model="selected.feedingDuration" id="dura" :invalid="isFeedingDurationRequired"/> 
-                <label for="dura"> Feeding Duration:</label> 
+                <label for="dura"> Feeding Duration: </label> 
               </IftaLabel>
               <IftaLabel> 
                 <InputText v-model="selected.feedingFrequency" id="freq" :invalid="isFeedingFrequencyRequired" /> 
@@ -587,6 +592,17 @@ onBeforeUnmount(() => {
           </Divider>
           <Textarea v-model="selected.remarks" class="mt-2 ml-10"/>
         </section>
+
+        <section class="sticky bottom-0 flex justify-end gap-16 p-4 bg-surface-0 dark:bg-surface-900 text-2xl"> 
+          <Button severity="secondary" raised @click="onClickClearForm">
+            <Icon name="mdi:delete-forever" class="text-3xl text-red-500" />
+            <span class="text-sm"> Clear Form </span>
+          </Button>
+          <Button raised @click="onClickSubmit">
+            <Icon name="mdi:content-save-move" class="text-3xl" />
+            <span class="text-sm font-bold"> Issue Diet Order </span>
+          </Button>
+        </section>
       </div>
     </div>
 
@@ -656,3 +672,13 @@ onBeforeUnmount(() => {
     
   </div>
 </template>
+
+
+<style scoped>
+
+.current_cut_off_time {
+  font-weight: bold;
+  font-size: 1rem;
+  color: var(--primary-color);
+}
+</style>

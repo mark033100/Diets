@@ -36,8 +36,9 @@ export const useCrudNutritionScreening = () => {
 
   const get_NutritionScreening = (enccode: string) => {
 
-    return useAsyncData('patientNutritionScreening', () => $fetch(`/api/patients-api/patients-nutritionScreening/${enccode}`));
-
+    return useAsyncData('patientNutritionScreening', () => $fetch(`/api/patients-api/patients-nutritionScreening/get`, {
+      params: { enccode: enccode }
+    }));
   }
 
   const update_NutritionScreening = async (event: any) => {

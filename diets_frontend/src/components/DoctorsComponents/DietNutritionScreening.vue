@@ -6,6 +6,8 @@ import { useCrudNutritionScreening } from '~/composables/crud/crud-NutritionScre
 import errorInlineMessage from '~/components/customComponents/errors/errorInlineMessage.vue';
 import { useMyPatientDetailsStore } from '~/stores/patientDetails';
 import NarQuestions from '~/assets/json/NarQuestions.json';
+import custom_no_data from '../customComponents/icons/custom_no_data.vue';
+
 
 
 const { create_NutritionScreening, get_NutritionScreening, update_NutritionScreening, delete_NutritionScreening } = useCrudNutritionScreening();
@@ -32,7 +34,6 @@ const props = defineProps({
 
 
 const { data: patientNutritionScreeningData, status: screeningStatus, error: screeningError, refresh } = await get_NutritionScreening(props.enccode);
-
 const narQuestionaires = computed(() =>  Number(props.age) > 18 ? NarQuestions.adult : NarQuestions.pedia );
 
 const setError = () => {
@@ -190,7 +191,7 @@ function setPatientNutritionTag () {
     <div v-else-if="screeningApiStatus === 'success'">
       <span>
         <label class="label-small"> Nutrition Screening Result</label>
-        <p class="data-output">{{ patientNutritionScreeningData[0]?.riskIndicator || ''}} </p>
+        <p class="data-output">{{ patientNutritionScreeningData[0]?.riskIndicator || 'No Screening Record'}} </p>
       </span>
 
       <div class="mt-2 flex justify-between "> 
@@ -200,11 +201,11 @@ function setPatientNutritionTag () {
         </p>
         <p class="flex flex-col items-center">
           <label class="label-small"> Height (cm) </label>
-          <span class="data-output"> {{ patientNutritionScreeningData[0]?.height ?? 'No Record'}} </span>  
+          <span class="data-output"> {{ patientNutritionScreeningData[0]?.height ?? '---'}} </span>  
         </p>
         <p class="flex flex-col items-center">
           <label class="label-small"> Weight (kg)</label>
-          <span class="data-output"> {{ (patientNutritionScreeningData[0]?.weight ?? 'No Record')}}  </span>  
+          <span class="data-output"> {{ (patientNutritionScreeningData[0]?.weight ?? '---')}}  </span>  
         </p>
       </div>
   
@@ -280,8 +281,8 @@ function setPatientNutritionTag () {
               <TabPanel value="1">
                 <div class="flex">
                   <ScrollPanel class="h-[55vh] text-sm w-full">
-                      <div v-if="assessmentResult.length === 0" class="text-center">
-                          <span>No assessments</span>
+                      <div v-if="assessmentResult.length === 0" class="flex flex-col gap-8 p-12 items-center justify-center">
+                          <custom_no_data width="300" height="300" message="No Nutrition Assessment History"/>
                       </div>
                       <div class="p-2" v-else>
                           <p class="font-bold text-base">Nutrition Assessment History</p>

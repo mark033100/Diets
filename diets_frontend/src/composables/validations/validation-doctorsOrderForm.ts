@@ -35,6 +35,7 @@ export const useDoctorsOrderValidation = (selectedInputs: doctorsOrdeInputInterf
   // If Continuos: Duration and Frequency is not Required
   function validateDietRequirements(): boolean {
 
+
     // If Feeding Mode is Continuous
     if (selectedInputs.feedingMode === '01') {
       return !!selectedInputs.dietDilution;
