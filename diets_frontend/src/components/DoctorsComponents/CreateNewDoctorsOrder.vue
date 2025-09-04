@@ -40,15 +40,12 @@ const toast = useToast();
 const patient_age = props.age ? Number(props.age) : 0;
 const authUserCookie = useCookie<cookieUserInterface>('authUser');
 const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
-const toggleDietOrder = ref(false);
-const toggleUseSavedDietOrder = ref(false);
 const current_cut_off_time = ref();
 
 const draft = reactive({
   title: '',
   remarks: ''
 });
-
 
 const selected = reactive <doctorsOrderFormInterface>({
   dietCategory: '1',
@@ -79,6 +76,10 @@ const debouncedSave = useDebounceFn(() => {
 
 watch (() => ({ ...selected }), debouncedSave, { deep: true });
 
+// Toggles
+const toggleDietOrder = ref(false);
+const toggleUseSavedDietOrder = ref(false);
+const toggleDraft = ref(false);
 
 // Rendering condition values
 const show_Add_SubDietType_Input = ref(false);
@@ -91,17 +92,16 @@ const isDietType1Required = computed(() => !selected.dietType1);
 const isDietType2Required = computed(() => selected.dietType1 === '46'  && !selected.dietType2);
 const isDietCaloriesRequired = computed(() => !selected.dietCalories);
 const isDietDilutionRequired = computed(() => selected.dietCategory === '2' && !selected.dietDilution);
-const isNutrientsProteinRequired = computed(() => !!(patient_age > 18 && selected.nutrientsProtein === null));
-const isNutrientsCarbsRequired = computed(() => !!(patient_age > 18 && selected.nutrientsCarbohydrates === null));
-const isNutrientsFatRequired = computed(() => !!(patient_age > 18 && selected.nutrientsFat === null));
+const isNutrientsProteinRequired = computed(() => !!(patient_age > 18 && !selected.nutrientsProtein));
+const isNutrientsCarbsRequired = computed(() => !!(patient_age > 18 && !selected.nutrientsCarbohydrates));
+const isNutrientsFatRequired = computed(() => !!(patient_age > 18 && !selected.nutrientsFat));
 const isFeedingModeRequired = computed(() => !selected.feedingMode);
 const isFeedingDurationRequired = computed(() => !selected.feedingDuration);
 const isFeedingFrequencyRequired = computed(() => !selected.feedingFrequency);
 const isAllergyTypeRequired = computed(() => !selected.allergyType);
-const isAllergySubtypeRequired = computed(() => selected.allergyType === '10' || selected.allergyType === '11' ? selected.allergySubtype === null ? true : false : false);
-const isSnsFrequencyRequired = computed(() => !!(selected.snsType && selected.snsFrequency === null));
-const isSnsDescriptionRequired = computed(() => !!(selected.snsType && selected.snsDescription === null));
-
+const isAllergySubtypeRequired = computed(() => selected.allergyType === '10' || selected.allergyType === '11' ? !selected.allergySubtype : false);
+const isSnsFrequencyRequired = computed(() => !!(selected.snsType && !selected.snsFrequency));
+const isSnsDescriptionRequired = computed(() => !!(selected.snsType && !selected.snsDescription));
 // Component Functions
 const onClickedAddDietType = () => {
   show_Add_SubDietType_Input.value = !show_Add_SubDietType_Input.value;
@@ -205,6 +205,48 @@ const onClickClearForm = () => {
   selected.snsDescription = null;
   selected.remarks = null;
 }
+
+const onClickSubmitDraft = async () => {
+
+    if (!draft.title) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Please enter a title for the draft.', life: 3000 });
+        return;
+    }
+
+    // Proceed with submitting the draft
+    try { 
+        const data = await $fetch('/api/doctors-api/doctor_saveDraft', {
+            method: 'POST',
+            body: {
+                docId: authUserCookie.value.employeeid,
+                draftTitle: draft.title,
+                draftRemarks: draft.remarks,
+                draftDetails: selected 
+            }
+        });
+
+        toast.add({
+            severity: 'success',
+            summary: 'Diet Order Created',
+            detail: 'Diet Order has been successfully created.',
+            life: 3000
+        });
+
+        toggleDraft.value = false;
+
+    } catch (error: any) {
+        // gets the error: Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'error_message')
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.data?.data?.error_message || 'Oops... Something went wrong. Unable to save draft.',
+            life: 3000
+        });
+        return;
+    }
+
+}
+
 
 const computeNutrients = () => {
 
@@ -450,7 +492,7 @@ onBeforeUnmount(() => {
           <div class="flex justify-start gap-2">
             <div class="flex flex-col gap-2 ml-10 mt-2">
               <IftaLabel> 
-                <InputText 
+                <InputNumber 
                   v-model="selected.nutrientsProtein" 
                   id="mode"
                   :invalid="isNutrientsProteinRequired"
@@ -598,6 +640,10 @@ onBeforeUnmount(() => {
             <Icon name="mdi:delete-forever" class="text-3xl text-red-500" />
             <span class="text-sm"> Clear Form </span>
           </Button>
+          <Button severity="secondary" raised @click="toggleDraft = true">
+            <Icon name="mdi:draft" class="text-3xl text-blue-500" />
+            <span class="text-sm"> Save as Draft </span>
+          </Button>
           <Button raised @click="onClickSubmit">
             <Icon name="mdi:content-save-move" class="text-3xl" />
             <span class="text-sm font-bold"> Issue Diet Order </span>
@@ -619,7 +665,7 @@ onBeforeUnmount(() => {
           <label class="font-bold text-xl">Use Saved?</label> 
         </div>
       </template>
-      <p>A previous file was saved due to unexpected closure. Do you wish to use it?</p>
+      <p>A previous entry was saved due to unexpected closure. Do you wish to use it?</p>
       <div class="flex justify-between items-center mt-10">
         <Button severity="secondary" raised text @click="toggleDietOrder = false">
           <Icon name="mdi:close" class="text-2xl text-red-500" />
@@ -643,7 +689,7 @@ onBeforeUnmount(() => {
       <template #header>
         <div class="w-full ">
           <label class="font-bold text-xl">Save Entry as Draft?</label> 
-          <p> Saving this entry will save it as a draft and can be used later. </p>
+          <p class="text-sm"> Saving this entry will save it as a draft and can be used later. </p>
         </div>
       </template>
       <div class="w-full flex flex-col gap-2 mt-5">
@@ -664,10 +710,48 @@ onBeforeUnmount(() => {
           <span class="text-sm font-bold" @click="toggleDietOrder = false"> Cancel </span>
         </Button>
         <Button severity="primary" raised @click="onClickSubmit">
-          <Icon name="mdi:content-save-move" class="text-2xl" />
+          <Icon name="mdi:content-save" class="text-2xl" />
           <span class="text-sm font-bold"> Save Draft </span>
         </Button>
       </div>
+    </Dialog>
+
+    <Dialog
+        v-model:visible="toggleDraft"
+        :draggable="false" 
+        :closable="true" 
+        :dismissableMask="true" 
+        :blockScroll="true"  
+        modal
+        >
+        <template #header>
+            <div class="w-full ">
+                <label class="font-bold text-xl">Save Entry as Draft?</label> 
+                <p> Saving this entry will save it as a draft and can be used later. </p>
+            </div>
+        </template>
+        <div class="w-full flex flex-col gap-2 mt-5">
+            <label class="font-bold"> Title </label>
+            <InputText v-model="draft.title" 
+                class="w-full" 
+                placeholder="Enter title for this draft."
+            />
+            <label class="font-bold mt-5"> Remarks </label>
+            <Textarea v-model="draft.remarks" 
+                class="w-full" 
+                placeholder="Enter remarks or description for this draft (optional)"
+            />
+        </div>
+        <div class="flex justify-between items-center mt-10">
+            <Button severity="secondary" raised text @click="toggleDietOrder = false">
+                <Icon name="mdi:close" class="text-2xl text-red-500" />
+                <span class="text-sm font-bold" @click="toggleDietOrder = false"> Cancel </span>
+            </Button>
+            <Button severity="primary" raised @click="onClickSubmitDraft">
+                <Icon name="mdi:content-save-move" class="text-2xl" />
+                <span class="text-sm font-bold"> Save Draft </span>
+            </Button>
+        </div>
     </Dialog>
     
   </div>

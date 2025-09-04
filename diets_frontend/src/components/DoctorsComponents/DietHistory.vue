@@ -136,13 +136,13 @@ onUnmounted(() => {
         <section>
           <Tag :severity="dietStatus.severity" :value=" dietStatus.name" class=" align-top" />
           <span class="font-bold text-xl"> 
-            {{ selectedDietHistory.dietgroup ? checkAcronym(selectedDietHistory.dietgroup) : selectedDietHistory }} - {{ selectedDietHistory.dietname ? selectedDietHistory.dietname : '' }} 
+            {{ selectedDietHistory.dietname ? selectedDietHistory.dietname : '' }} 
           </span> 
           <span> {{ selectedDietHistory.dodate ? formatDate(selectedDietHistory.dodate) : '' }} | {{ selectedDietHistory.lname ? selectedDietHistory.lname : '' }}, {{ selectedDietHistory.fname ? selectedDietHistory.fname : '' }} </span>
         </section>
 
         <section>
-          <span class="label-title  "> Diet Requirements </span>
+          <span class="label-title"> Diet Requirements </span>
           <div class="flex justify-between gap-4"> 
             <div class="w-[50%]">
               <div class="p-2 text-sm">

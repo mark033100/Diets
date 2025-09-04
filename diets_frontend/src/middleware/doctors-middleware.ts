@@ -6,4 +6,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
     const { setMenuMode } = useLayout();
 
     setMenuMode('overlay');
+
+
 })

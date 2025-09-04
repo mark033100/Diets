@@ -10,6 +10,13 @@ module.exports = {
             lg: '992px',
             xl: '1200px',
             '2xl': '1920px'
+        },
+        extend: {
+            fontSize: {
+                '3xs': '0.5rem',
+                '2xs': '0.625rem',
+            }
         }
     }
+    
 };
