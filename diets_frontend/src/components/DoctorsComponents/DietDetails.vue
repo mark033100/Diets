@@ -99,16 +99,16 @@ const props = defineProps({
             <p class="label-small"> Feeding Procedure</p>
             <ul class="pl-4 flex flex-col gap-2">
               <li class="flex justify-between">
-                <label class="label-small">Mode: </label>
-                <p> {{ patientsDietResult.feedingMode || 'None' }} </p>
+                <label class="label-small">Mode:</label>
+                <p> {{ patientsDietResult.feedingMode ? checkEnteralCode(patientsDietResult.feedingMode) : 'None' }} </p>
               </li>
               <li class="flex justify-between">
                 <label class="label-small">Duration: </label>
-                <p> {{ patientsDietResult.duration || '0' }} hours</p>
+                <p> {{ patientsDietResult.feedingDuration || '0' }} hour(s)</p>
               </li>
               <li class="flex justify-between">
                 <label class="label-small">Frequency: </label>
-                <p> {{ patientsDietResult.frequency || '0' }} times/day</p>
+                <p> {{ patientsDietResult.feedingFrequency || '0' }} times/day</p>
               </li>
             </ul>
           </div>
@@ -145,9 +145,9 @@ const props = defineProps({
           <li>Other Details:</li>
         </ul>
         <ul class="text-sm flex flex-col gap-2">
-          <li> {{ patientsDietResult.allergies? patientsDietResult.allergies : '' }}</li>
-          <li class="self-start justify-self-start">  {{ patientsDietResult.precaution? patientsDietResult.precaution : 'None' }}</li>
-          <li>  {{ patientsDietResult.precaution? patientsDietResult.precaution : '' }}</li>
+          <li> {{ patientsDietResult.allergies? patientsDietResult.onsFormula : '' }}</li>
+          <li class="self-start justify-self-start">  {{ patientsDietResult.onsFrequency? patientsDietResult.onsFrequency : 'None' }}</li>
+          <li>  {{ patientsDietResult.precaution? patientsDietResult.onsDescription : '' }}</li>
         </ul>
           
       </div>

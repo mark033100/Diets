@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
 
     });
 
-    return body;
+    return result;
 
 })
 

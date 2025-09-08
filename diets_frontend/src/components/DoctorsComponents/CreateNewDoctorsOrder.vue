@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import DietTypes from '~/assets/json/DietTypes.json';
 import custom_button from '~/components/customComponents/buttons/custom_button_icon.vue';
+import DoctorsDraft from '~/components/DoctorsComponents/DoctorsDrafts.vue';
 import { useDoctorsOrderValidation } from '~/composables/validations/validation-doctorsOrderForm';
 import type { doctorsOrdeInputInterface, validationResult, cookieUserInterface, doctorsOrderFormInterface } from '@/types/objectTypes';
 
@@ -101,109 +102,108 @@ const isFeedingFrequencyRequired = computed(() => !selected.feedingFrequency);
 const isAllergyTypeRequired = computed(() => !selected.allergyType);
 const isAllergySubtypeRequired = computed(() => selected.allergyType === '10' || selected.allergyType === '11' ? !selected.allergySubtype : false);
 const isSnsFrequencyRequired = computed(() => !!(selected.snsType && !selected.snsFrequency));
-const isSnsDescriptionRequired = computed(() => !!(selected.snsType && !selected.snsDescription));
+// const isSnsDescriptionRequired = computed(() => !!(selected.snsType && !selected.snsDescription));
 // Component Functions
 const onClickedAddDietType = () => {
-  show_Add_SubDietType_Input.value = !show_Add_SubDietType_Input.value;
-  selected.dietType2= null;
+    show_Add_SubDietType_Input.value = !show_Add_SubDietType_Input.value;
+    selected.dietType2= null;
 } 
 
 const onAllergyChange = () => { 
-  selected.allergySubtype = null;
+    selected.allergySubtype = null;
 }
 
 const onDietType1Change = () => { 
-  show_Add_DietType_Button.value = false;
-  show_Add_Therapeutic_Input.value = false;
-  show_Add_SubDietType_Input.value = false;
-  selected.dietType2= null;
+    show_Add_DietType_Button.value = false;
+    show_Add_Therapeutic_Input.value = false;
+    show_Add_SubDietType_Input.value = false;
+    selected.dietType2= null;
 
-  if(selected.dietType1 === '01') { 
-    show_Add_DietType_Button.value = !show_Add_DietType_Button.value;
-  }
+    if(selected.dietType1 === '01') { 
+        show_Add_DietType_Button.value = !show_Add_DietType_Button.value;
+    }
 
-  if(selected.dietType1 === '46') { 
-    show_Add_Therapeutic_Input.value = !show_Add_Therapeutic_Input.value;
-  }
+    if(selected.dietType1 === '46') { 
+        show_Add_Therapeutic_Input.value = !show_Add_Therapeutic_Input.value;
+    }
 
 }
 
 const onClickSubmit = () => { 
 
-  const inputs = <doctorsOrdeInputInterface>{ ...selected, age: props.age, gender: props.gender };
-  const { isValid, errors } = useDoctorsOrderValidation(inputs);
-  if (isValid) {
-    submitForm();
-  } else {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill in all required fields.' , life: 3000});
-  }
+    const inputs = <doctorsOrdeInputInterface>{ ...selected, age: props.age, gender: props.gender };
+    const { isValid, errors } = useDoctorsOrderValidation(inputs);
+    if (isValid) {
+        submitForm();
+    } else {
+        console.log('Errors:', errors);
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill in all required fields.' , life: 3000});
+    }
 }
 
 const submitForm = async () => {
 
-  try { 
-    const data = await $fetch('/api/doctors-api/doctor_submitForm', {
-      method: 'POST',
-      body: {
-        ...selected,
-        docId: authUserCookie.value.employeeid,
-        hpercode: props.hpercode,
-        enccode: props.enccode,
-        age: props.age,
-        gender: props.gender,
-        previousDietcode: props.dietcode || null
-      }
-    });
+    try { 
+        const data = await $fetch('/api/doctors-api/doctor_submitForm', {
+            method: 'POST',
+            body: {
+                ...selected,
+                docId: authUserCookie.value.employeeid,
+                hpercode: props.hpercode,
+                enccode: props.enccode,
+                age: props.age,
+                gender: props.gender,
+                previousDietcode: props.dietcode || null
+            }
+        });
 
-    toast.add({
-      severity: 'success',
-      summary: 'Diet Order Created',
-      detail: 'Diet Order has been successfully created.',
-      life: 3000
-    });
+        toast.add({
+            severity: 'success',
+            summary: 'Diet Order Created',
+            detail: 'Diet Order has been successfully created.',
+            life: 3000
+        });
 
-    clearSelectedStorage();
-    emit('success');
+        clearSelectedStorage();
+        emit('success');
 
-  } catch (error: any) {
-    toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: error.data.data.error_message,
-      life: 3000
-    });
-    return;
-  }
-
-
+    } catch (error: any) {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.data.data.error_message,
+            life: 3000
+        });
+        return;
+    }
 }
 
 const clearSelectedStorage = () => { 
-  localStorage.removeItem(LOCAL_STORAGE_KEY);
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
 }
 
 const onClickClearForm = () => { 
-  clearSelectedStorage();
-  selected.dietCategory = '1';
-  selected.dietType1 = null;
-  selected.dietType2 = null;
-  selected.dietCalories = null;
-  selected.dietVolume = null;
-  selected.dietDilution = '1';
-  selected.nutrientsProtein = null;
-  selected.nutrientsCarbohydrates = null;
-  selected.nutrientsFat = null;
-  selected.nutrientsFiber = null;
-  selected.feedingMode = null;
-  selected.feedingDuration = null;
-  selected.feedingFrequency = null;
-  selected.allergyType = null;
-  selected.allergySubtype = null;
-  selected.precautions = null;
-  selected.snsType = null;
-  selected.snsFrequency = null;
-  selected.snsDescription = null;
-  selected.remarks = null;
+    clearSelectedStorage();
+    selected.dietCategory = '1';
+    selected.dietType1 = null;
+    selected.dietType2 = null;
+    selected.dietCalories = null;
+    selected.dietVolume = null;
+    selected.dietDilution = '1';
+    selected.nutrientsProtein = null;
+    selected.nutrientsCarbohydrates = null;
+    selected.nutrientsFat = null;
+    selected.nutrientsFiber = null;
+    selected.feedingMode = null;
+    selected.feedingDuration = null;
+    selected.feedingFrequency = null;
+    selected.allergyType = null;
+    selected.allergySubtype = null;
+    selected.precautions = null;
+    selected.snsType = null;
+    selected.snsFrequency = null;
+    selected.snsDescription = null;
+    selected.remarks = null;
 }
 
 const onClickSubmitDraft = async () => {
@@ -247,7 +247,6 @@ const onClickSubmitDraft = async () => {
 
 }
 
-
 const computeNutrients = () => {
 
   const age = Number(props.age);
@@ -281,45 +280,49 @@ const computeNutrients = () => {
 }
 
 const isSavedAvailable = () => {
-  if (savedData) {
-    toggleUseSavedDietOrder.value = true;
-  }
+    if (savedData) {
+        toggleUseSavedDietOrder.value = true;
+    }
 }
 
 const handleOnClick_UseSavedDietOrder = () => {
-  if (savedData !== null) {
-    Object.assign(selected, JSON.parse(savedData));
-  }
-  toggleUseSavedDietOrder.value = false;
+    if (savedData !== null) {
+        Object.assign(selected, JSON.parse(savedData));
+    }
+    toggleUseSavedDietOrder.value = false;
 }
 
 const handleOnClick_CancelUseSavedDietOrder = () => { 
-  clearSelectedStorage();
-  toggleUseSavedDietOrder.value = false;
+    clearSelectedStorage();
+    toggleUseSavedDietOrder.value = false;
 }
 
 const checkCurrentCutOffTime = () => {
-  const now = new Date();
-  const currentHour = now.getHours();
-  const currentMinutes = now.getMinutes();
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinutes = now.getMinutes();
 
-  if (currentHour < 4 || (currentHour === 4 && currentMinutes < 59)) {
-    return "Morning";
-  } else if (currentHour < 10 || (currentHour === 10 && currentMinutes < 59)) {
-    return "Lunch";
-  } else if (currentHour < 15 || (currentHour === 15 && currentMinutes < 59)) {
-    return "Dinner";
-  }
+    if (currentHour < 4 || (currentHour === 4 && currentMinutes < 59)) {
+        return "Morning";
+    } else if (currentHour < 10 || (currentHour === 10 && currentMinutes < 59)) {
+        return "Lunch";
+    } else if (currentHour < 15 || (currentHour === 15 && currentMinutes < 59)) {
+        return "Dinner";
+    }
+}
+
+const handleUseDietTemplate = (dietDetails: any) => {
+    Object.assign(selected, dietDetails);
 }
 
 onMounted(() => { 
-  computeNutrients();
-  isSavedAvailable();
-  current_cut_off_time.value = checkCurrentCutOffTime();
+    computeNutrients();
+    isSavedAvailable();
+    current_cut_off_time.value = checkCurrentCutOffTime();
 })
 
 onBeforeUnmount(() => {
-  clearSelectedStorage();
+    clearSelectedStorage();
 })
 
 
@@ -360,11 +363,13 @@ onBeforeUnmount(() => {
         </section>
 
         <section>
-          <label class="font-bold mt-2"> Doctors Order Drafts </label>
+            <label class="font-bold"> Doctors Order Templates / Drafts </label>
+            <DoctorsDraft class="mt-4" @use-diet-template="handleUseDietTemplate"/>
         </section>
 
       </div>
 
+      <!-- FORM -->
       <div class="doctors-main-form-container-2">
         <section>
           <Divider align="left" type="dashed">
@@ -492,7 +497,7 @@ onBeforeUnmount(() => {
           <div class="flex justify-start gap-2">
             <div class="flex flex-col gap-2 ml-10 mt-2">
               <IftaLabel> 
-                <InputNumber 
+                <InputText
                   v-model="selected.nutrientsProtein" 
                   id="mode"
                   :invalid="isNutrientsProteinRequired"
@@ -517,7 +522,7 @@ onBeforeUnmount(() => {
               </IftaLabel>
               <IftaLabel> 
                 <InputText v-model="selected.nutrientsFiber" 
-                  id="mode"
+                  id="mode" 
                 />
                 <label for="mode"> Fiber:</label> 
               </IftaLabel>
@@ -543,7 +548,7 @@ onBeforeUnmount(() => {
                   optionValue="id"
                   @change="onAllergyChange"
                 /> 
-                <label for="allergies"> Allergies: {{selected.allergySubtype}} </label> 
+                <label for="allergies"> Allergies: </label> 
               </IftaLabel>
 
               <IftaLabel v-if="selected.allergyType === '10'"> 
@@ -601,7 +606,7 @@ onBeforeUnmount(() => {
               <label for="snsType"> SNS Type:</label> 
             </IftaLabel>
 
-            <IftaLabel> 
+            <IftaLabel v-if="selected.snsType"> 
               <MultiSelect v-model="selected.snsFrequency" 
                 :options="DietTypes.Snacktime"
                 :invalid="isSnsFrequencyRequired"
@@ -614,11 +619,10 @@ onBeforeUnmount(() => {
               <label for="snsType"> SNS Frequency:</label> 
             </IftaLabel>
 
-            <IftaLabel> 
+            <IftaLabel v-if="selected.snsType"> 
               <InputText v-model="selected.snsDescription" 
                 class="w-full" 
                 id="snsType"
-                :invalid="isSnsDescriptionRequired"
               />
               <label for="snsType"> SNS Description:</label> 
             </IftaLabel>
@@ -635,19 +639,19 @@ onBeforeUnmount(() => {
           <Textarea v-model="selected.remarks" class="mt-2 ml-10"/>
         </section>
 
-        <section class="sticky bottom-0 flex justify-end gap-16 p-4 bg-surface-0 dark:bg-surface-900 text-2xl"> 
-          <Button severity="secondary" raised @click="onClickClearForm">
-            <Icon name="mdi:delete-forever" class="text-3xl text-red-500" />
-            <span class="text-sm"> Clear Form </span>
-          </Button>
-          <Button severity="secondary" raised @click="toggleDraft = true">
-            <Icon name="mdi:draft" class="text-3xl text-blue-500" />
-            <span class="text-sm"> Save as Draft </span>
-          </Button>
-          <Button raised @click="onClickSubmit">
-            <Icon name="mdi:content-save-move" class="text-3xl" />
-            <span class="text-sm font-bold"> Issue Diet Order </span>
-          </Button>
+        <section class="flex justify-end gap-16 z-10 bg-opacity-0" style=" position: sticky; bottom: -0px;"> 
+            <Button severity="secondary" raised @click="onClickClearForm">
+                <Icon name="mdi:delete-forever" class="text-3xl text-red-500" />
+                <span class="text-sm"> Clear Form</span>
+            </Button>
+            <Button severity="secondary" raised @click="toggleDraft = true">
+                <Icon name="mdi:draft" class="text-3xl text-blue-500" />
+                <span class="text-sm"> Save as Draft </span>
+            </Button>
+            <Button raised @click="onClickSubmit">
+                <Icon name="mdi:content-save-move" class="text-3xl" />
+                <span class="text-sm font-bold"> Issue Diet Order </span>
+            </Button>
         </section>
       </div>
     </div>
@@ -745,7 +749,7 @@ onBeforeUnmount(() => {
         <div class="flex justify-between items-center mt-10">
             <Button severity="secondary" raised text @click="toggleDietOrder = false">
                 <Icon name="mdi:close" class="text-2xl text-red-500" />
-                <span class="text-sm font-bold" @click="toggleDietOrder = false"> Cancel </span>
+                <span class="text-sm font-bold" @click="toggleDraft = false"> Cancel </span>
             </Button>
             <Button severity="primary" raised @click="onClickSubmitDraft">
                 <Icon name="mdi:content-save-move" class="text-2xl" />

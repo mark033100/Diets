@@ -53,61 +53,6 @@ const enccode = decodeURIComponent(patient?.split('+')[0] || '');
 // Computed
 const isPatientDataLoaded = computed(() => api_status.value === 'success' && patientsDietResult.value);
 
-// Methods
-function handleError(error) {
-    api_status.value = 'error';
-    toast.add({ 
-        severity: 'error', 
-        summary: error.title, 
-        detail: error.description, 
-        life: 3000 
-    });
-    error_object.value = { ...error };
-}
-
-function transformPatientData(patient) {
-    console.log('Height: ' + patient.height);
-    console.log('Weight: ' + patient.weight);
-    console.log('Patient: ' + patient);
-    return {
-        ...patient,
-        disable_diet_order: !patient.height || !patient.weight,
-        isAdult: Number(patient.patage) >= 18,
-        gender: patient.patsex === 'M' ? 'Male' : patient.patsex === 'F' ? 'Female' : 'Unknown',
-        age: getPatientAge(patient.patage, patient.patagemo),
-        unformattedAge: patient.patage,
-        tags: {
-        admitted: true,
-        pedia: Number(patient.patage) < 18,
-        atrisk: patient.riskIndicator,
-        }
-    };
-}
-
-function addPatientTag(patient) {
-  patient_store.addPatientTag({
-    title: Number(patient.patage) < 18 ? 'Pedia' : 'Adult',
-    severity: 'warn'
-  });
-}
-
-async function handleFetchSuccess(data) {
-    if (!data || Object.keys(data).length === 0) {
-        handleError(ERROR_MESSAGES.NO_PATIENT_DATA);
-        return;
-    }
-
-    api_status.value = 'success';
-    console.log('Fetched Patient Data:', data);
-    patientsDietResult.value = transformPatientData(data);
-    addPatientTag(data);
-}
-
-async function onSuccessSubmit() {
-    toggle_diet_order.value = false;
-    await useFetchPatientDietData();
-}
-
 // Lifecycle Hooks
 onMounted(async () => {
     if (!enccode) {
@@ -131,6 +76,60 @@ onMounted(async () => {
         handleError(ERROR_MESSAGES.SERVER_ERROR);
     }
 });
+
+// Methods
+function handleError(error) {
+    api_status.value = 'error';
+    toast.add({ 
+        severity: 'error', 
+        summary: error.title, 
+        detail: error.description, 
+        life: 3000 
+    });
+    error_object.value = { ...error };
+}
+
+function transformPatientData(patient) {
+    return {
+        ...patient,
+        disable_diet_order: !patient.height || !patient.weight,
+        isAdult: Number(patient.patage) >= 18,
+        gender: patient.patsex === 'M' ? 'Male' : patient.patsex === 'F' ? 'Female' : 'Unknown',
+        age: getPatientAge(patient.patage, patient.patagemo),
+        unformattedAge: patient.patage,
+        tags: {
+        admitted: true,
+        pedia: Number(patient.patage) < 18,
+        atrisk: patient.riskIndicator,
+        }
+    };
+}
+
+function addPatientTag(patient) {
+    patient_store.addPatientTag({
+        title: Number(patient.patage) < 18 ? 'Pedia' : 'Adult',
+        severity: 'warn'
+    });
+}
+
+async function handleFetchSuccess(data) {
+    if (!data || Object.keys(data).length === 0) {
+        handleError(ERROR_MESSAGES.NO_PATIENT_DATA);
+        return;
+    }
+
+    api_status.value = 'success';
+    console.log('Fetched Patient Data:', data);
+    patientsDietResult.value = transformPatientData(data);
+    addPatientTag(data);
+}
+
+async function onSuccessSubmit() {
+    toggle_diet_order.value = false;
+    await useFetchPatientDietData();
+}
+
+
 </script>
 
 <template>
@@ -232,23 +231,23 @@ onMounted(async () => {
             class="overflow-y-hidden"
             modal
         >
-        <template #header>
-            <div class="w-full">
-                <span>
-                    <label class="font-bold text-xl">Create Diet Order</label> 
-                    <p>This is a form to create a new diet order for a patient.</p>
-                </span>
-            </div>
-        </template>
-        
-        <CreateNewDoctorsOrder 
-            :age="patientsDietResult.unformattedAge" 
-            :gender="patientsDietResult.gender"
-            :hpercode="patientsDietResult.hpercode"
-            :enccode="patientsDietResult.enccode"
-            :dietcode="patientsDietResult.dietcode"
-            @success="onSuccessSubmit"
-        />
+            <template #header>
+                <div class="w-full">
+                    <span>
+                        <label class="font-bold text-xl">Create Diet Order</label> 
+                        <p>This is a form to create a new diet order for a patient.</p>
+                    </span>
+                </div>
+            </template>
+            
+            <CreateNewDoctorsOrder 
+                :age="patientsDietResult.unformattedAge" 
+                :gender="patientsDietResult.gender"
+                :hpercode="patientsDietResult.hpercode"
+                :enccode="patientsDietResult.enccode"
+                :dietcode="patientsDietResult.dietcode"
+                @success="onSuccessSubmit"
+            />
         </Dialog>
 
         <Dialog 

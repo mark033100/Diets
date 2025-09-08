@@ -85,17 +85,17 @@ const onDelete_NutritionScreening = async (id) => {
 
 const fetchPatientAssessments = async () => {
 
-  const assessmentResultData = await useFetchPatientNutritionAssessment(props.enccode);
-  if (assessmentResultData.error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: assessmentResultData.error.message,
-      life: 3000
-    });
-    return;
-  }
-  assessmentResult.value = assessmentResultData.data;
+    const assessmentResultData = await useFetchPatientNutritionAssessment(props.enccode);
+    if (assessmentResultData.error) {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: assessmentResultData.error.message,
+            life: 3000
+        });
+        return;
+    }
+    assessmentResult.value = assessmentResultData.data;
 }
 
 const handleOnclick_cancelNutritionScreening = () => { 
@@ -105,70 +105,70 @@ const handleOnclick_cancelNutritionScreening = () => {
 
 const handleOnClick_SaveNutritionSreening = async () => {
 
-  const form = {
-    screeningAnswers: answers.value,
-    enccode: props.enccode,
-    height: patientNutritionScreeningData.value[0]?.height,
-    weight: patientNutritionScreeningData.value[0]?.weight,
-    bmi: patientNutritionScreeningData.value[0]?.bmi,
-    entry_by: userCookies.value.employeeid,
-    age: props.age
-  }
+    const form = {
+        screeningAnswers: answers.value,
+        enccode: props.enccode,
+        height: patientNutritionScreeningData.value[0]?.height,
+        weight: patientNutritionScreeningData.value[0]?.weight,
+        bmi: patientNutritionScreeningData.value[0]?.bmi,
+        entry_by: userCookies.value.employeeid,
+        age: props.age
+    }
 
-  const composable_Result = await create_NutritionScreening(form); 
+    const composable_Result = await create_NutritionScreening(form); 
 
-  if (composable_Result.status === 'error') {
-    handleFail_NutritionScreening();
-    return;
-  }
+    if (composable_Result.status === 'error') {
+        handleFail_NutritionScreening();
+        return;
+    }
 
-  handleSuccess_NutritionScreening();
+    handleSuccess_NutritionScreening();
 }
 
 const handleSuccess_NutritionScreening = () => {
-  nutritionScreeningDialog.value = false;
-  addQuestionDialog.value = false;
-  setPatientNutritionTag();
-  clearAnswers();
-  refresh();
-  toast.add({ severity: 'success', summary: 'Saving Success', detail: 'Nutrition Screening Answers are Saved Successfully!', life: 3000 });
+    nutritionScreeningDialog.value = false;
+    addQuestionDialog.value = false;
+    setPatientNutritionTag();
+    clearAnswers();
+    refresh();
+    toast.add({ severity: 'success', summary: 'Saving Success', detail: 'Nutrition Screening Answers are Saved Successfully!', life: 3000 });
 }
 
 const handleFail_NutritionScreening = () => {
-  toast.add({ severity: 'error', summary: composable_Result.title, detail: composable_Result.error.statusMessage, life: 3000 });
-  clearAnswers();
+    toast.add({ severity: 'error', summary: composable_Result.title, detail: composable_Result.error.statusMessage, life: 3000 });
+    clearAnswers();
 }
 
 const confirm_DeleteNutritionScreening = (event, id) => {
-  confirm.require({
-    target: event.currentTarget,
-    message: `Are you sure you want to delete this Nutrition Screening?`,
-    icon: 'pi pi-exclamation-triangle',
-    rejectProps: {
-      label: 'Cancel',
-      severity: 'secondary',
-      outlined: true
-    },
-    acceptProps: {
-      label: 'Confirm Delete',
-      severity: 'danger',
-      outlined: true
-    },
-    accept: () => {
-      onDelete_NutritionScreening(id);
-    },
-    reject: () => {
-      return false
-    }
-  })
+    confirm.require({
+        target: event.currentTarget,
+        message: `Are you sure you want to delete this Nutrition Screening?`,
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Cancel',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Confirm Delete',
+            severity: 'danger',
+            outlined: true
+        },
+        accept: () => {
+            onDelete_NutritionScreening(id);
+        },
+        reject: () => {
+            return false
+        }
+    })
 }
 
 function setPatientNutritionTag () { 
-  let stat = patientNutritionScreeningData.value[0]?.riskIndicator === 'Nutritionally at Risk' ? 'danger' : 'success';
-  patientStore.addPatientTag({
-    title: patientNutritionScreeningData.value[0]?.riskIndicator,
-    severity: stat
-  });
+    let stat = patientNutritionScreeningData.value[0]?.riskIndicator === 'Nutritionally at Risk' ? 'danger' : 'success';
+    patientStore.addPatientTag({
+        title: patientNutritionScreeningData.value[0]?.riskIndicator,
+        severity: stat
+    });
 }
 
 </script>
