@@ -39,7 +39,7 @@ const ERROR_MESSAGES = {
 
 // Refs
 const toast = useToast();
-const patient_store = useMyPatientDetailsStore();
+const paitentTagStore = useMyPatientStore();
 const toggle_diet_order = ref(false);
 const toggle_disabled_diet_order = ref(false);
 const api_status = ref(false);
@@ -61,6 +61,7 @@ onMounted(async () => {
     }
 
     api_status.value = 'loading';
+    paitentTagStore.clearTags();
     
     try {
         const result = await useFetchPatientDietData(enccode);
@@ -106,7 +107,7 @@ function transformPatientData(patient) {
 }
 
 function addPatientTag(patient) {
-    patient_store.addPatientTag({
+    paitentTagStore.addTag({
         title: Number(patient.patage) < 18 ? 'Pedia' : 'Adult',
         severity: 'warn'
     });
@@ -119,7 +120,6 @@ async function handleFetchSuccess(data) {
     }
 
     api_status.value = 'success';
-    console.log('Fetched Patient Data:', data);
     patientsDietResult.value = transformPatientData(data);
     addPatientTag(data);
 }
@@ -139,7 +139,6 @@ async function onSuccessSubmit() {
             <div>
                 <h4 class="m-0">Patient Diet Information</h4>
                 <p class="text-xs">General Admission Data and Diet Data of the Patient.</p>
-                {{ console.log('patient')}}
             </div>
             
             <div v-if="isPatientDataLoaded">

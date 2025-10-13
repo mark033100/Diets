@@ -12,6 +12,8 @@ import custom_no_data from '../customComponents/icons/custom_no_data.vue';
 
 const { create_NutritionScreening, get_NutritionScreening, update_NutritionScreening, delete_NutritionScreening } = useCrudNutritionScreening();
 const patientStore = useMyPatientDetailsStore();
+const patientTagStore = useMyPatientStore();
+
 const nutritionScreeningDialog = ref(false);
 const addQuestionDialog = ref(false);
 const assessmentResult = ref([]);
@@ -163,12 +165,14 @@ const confirm_DeleteNutritionScreening = (event, id) => {
     })
 }
 
-function setPatientNutritionTag () { 
-    let stat = patientNutritionScreeningData.value[0]?.riskIndicator === 'Nutritionally at Risk' ? 'danger' : 'success';
-    patientStore.addPatientTag({
-        title: patientNutritionScreeningData.value[0]?.riskIndicator,
-        severity: stat
-    });
+function setPatientNutritionTag() {
+    if (patientNutritionScreeningData.value[0]?.riskIndicator) {
+        let stat = patientNutritionScreeningData.value[0]?.riskIndicator === 'Nutritionally at Risk' ? 'danger' : 'success';
+        patientTagStore.addTag({
+            title: patientNutritionScreeningData.value[0]?.riskIndicator,
+            severity: stat
+        });
+    }
 }
 
 </script>

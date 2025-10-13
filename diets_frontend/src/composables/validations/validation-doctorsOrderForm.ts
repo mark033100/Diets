@@ -71,11 +71,13 @@ export const useDoctorsOrderValidation = (selectedInputs: doctorsOrdeInputInterf
         return true;
     }
 
+
+
     function validateNutrients(): boolean {
         if (Number(selectedInputs.age) < 1) return true;
 
         if (selectedInputs.nutrientsProtein) {
-            if (selectedInputs.snsType || selectedInputs.dietCategory === '1') {
+            if (selectedInputs.snsType || selectedInputs.dietCategory === '1') { // Carbs and Fats are not required if SNS is selected or if Diet Category is Oral
                 return true;
             } else {
                 return selectedInputs.nutrientsFat && selectedInputs.nutrientsCarbohydrates && selectedInputs.dietCalories ? true : false;
@@ -88,19 +90,14 @@ export const useDoctorsOrderValidation = (selectedInputs: doctorsOrdeInputInterf
 
     function validateAllergy(): boolean {
 
-        if (selectedInputs.allergyType === '10') {
-            return !!selectedInputs.allergySubtype;
-        }
+        return selectedInputs.allergyType === '10' ? !!selectedInputs.allergySubtype : !!selectedInputs.allergyType;
 
-        return !!selectedInputs.allergyType;
     }
 
     function validateSNS(): boolean {
 
-        if (selectedInputs.snsType) {
-            return !!selectedInputs.snsFrequency;
-        }
-        return true
+        return selectedInputs.snsType ? !!selectedInputs.snsFrequency : true;
+
     }
 
 }

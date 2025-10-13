@@ -1,10 +1,7 @@
 
 <script lang="ts" setup>
-import custom_button_add from '~/components/customComponents/custom_button_add.vue.vue';
 import custom_user_icon  from '~/components/customComponents/icons/custom_user_icon.vue';
-import { useMyPatientDetailsStore } from '~/stores/patientDetails';
-
-const patientStore = useMyPatientDetailsStore();
+const patientTagStore = useMyPatientStore();
 
 const props = defineProps({
   patientsDietResult: {
@@ -14,13 +11,9 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['toggleDietOrder'])
-const tags = patientStore.getPatientTags()
-
-const patientTags = patientStore.getPatientTags();
-console.log('Patient Tags:', patientTags);
+const patient_tags = patientTagStore.patientTags;
 
 onBeforeMount(() => {
-  patientStore.getPatientTags()
   if (!props.patientsDietResult) {
     throw createError({
       statusCode: 404,
@@ -46,7 +39,7 @@ onBeforeMount(() => {
       <div class="flex flex-col ">
         <span class="flex gap-2">
           <ClientOnly>
-            <Tag v-for="tag in patientTags" :key="tag.id" :severity="tag.severity" >
+            <Tag v-for="tag in patient_tags" :key="tag.id" :severity="tag.severity" >
               <p class="text-xs">{{ tag.title }}</p>
             </Tag> 
           </ClientOnly>

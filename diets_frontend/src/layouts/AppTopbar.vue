@@ -49,7 +49,8 @@ const handleLogout = async () => {
     try {
         const result = await auth.logout()
         if (result.status === 'success') {
-            
+
+            return navigateTo({ path: '/auth/login' })
         } else {
             toast.add({
                 severity: 'error',
