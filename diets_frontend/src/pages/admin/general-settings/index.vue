@@ -8,14 +8,19 @@ const submenu = [
 ]
 
 const maintenanceMode = ref(false);
+const publicConfig = await $fetch('/api/admin-api/config/config');
 
 
-const confirm_settings_toggle_maintenance = () => {
+const confirm_settings_toggle_maintenance = async () => {
     if (maintenanceMode.value) {
-        // Logic to handle enabling maintenance mode
-    } else {
-        // Logic to handle disabling maintenance mode
-    }
+        await $fetch('/api/admin-api/config/update', {
+            method: 'POST',
+            body: {
+                maintenanceMode: maintenanceMode.value
+            }
+        })
+    } 
+    return
 };
 
 </script>
@@ -43,11 +48,12 @@ const confirm_settings_toggle_maintenance = () => {
           <h3 class="text-xl font-semibold"> System Maintenance</h3>
           <section class="flex justify-between items-center my-12 "> <!-- Maintenance Mode Section -->
             <div class="w-3/4">
+                {{ publicConfig }}
               <h4 class="text-sm font-semibold">Enable System Maintenance</h4>
               <p class="text-sm text-gray-600">When enabled, the system will undergo maintenance and will restrict any user other than the admin to access the web app.</p>
             </div>
             <div class="w-1/4 text-right">
-              <ToggleSwitch v-model="maintenanceMode" @click="confirm_settings_toggle_maintenance" class="w-20" />
+              <ToggleSwitch v-model="maintenanceMode" @click="confirm_settings_toggle_maintenance" />
             </div>
           </section>
 
@@ -60,7 +66,7 @@ const confirm_settings_toggle_maintenance = () => {
               <p class="text-sm text-gray-600">Disables the Create Doctor's Order Button and prevents Doctors to create new Diet Orders. </p>
             </div>
             <div>
-              <ToggleSwitch v-model="maintenanceMode" @click="confirm_settings_toggle_maintenance" class="w-20" />
+              <ToggleSwitch v-model="maintenanceMode" @click="confirm_settings_toggle_maintenance" />
             </div>
           </section>
 
@@ -70,7 +76,7 @@ const confirm_settings_toggle_maintenance = () => {
               <p class="text-sm text-gray-600">Disables the Patient Search Button and prevents any users in clicking it. </p>
             </div>
             <div>
-              <ToggleSwitch v-model="maintenanceMode" @click="confirm_settings_toggle_maintenance" class="w-20" />
+              <ToggleSwitch v-model="maintenanceMode" @click="confirm_settings_toggle_maintenance" />
             </div>
           </section>
 

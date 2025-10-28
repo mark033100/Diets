@@ -1,0 +1,6 @@
+{
+  "maintenanceMode": true,
+  "apiBase": "https://api.example.com",
+  "theme": "light",
+  "apiSecret": "super-secret-key"
+}

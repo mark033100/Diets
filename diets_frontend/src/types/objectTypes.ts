@@ -126,3 +126,22 @@ export interface interface_userFetchResult {
     middlename: string,
     postitle: string
 }
+
+
+export interface user_cookie {
+    employeeid: string;
+    user_name: string;
+    user_level: keyof typeof ALLOWED_PAGES | '';
+    firstname: string;
+    lastname: string;
+    middlename: string;
+    postitle: string;
+}
+
+const ALLOWED_PAGES = {
+    '1': ['/admin', '/doctor', '/dietary', '/foodserver', '/nurse'],
+    '0': ['/doctor'],
+    '59': ['/dietary', '/foodserver'],
+    '60': ['/foodserver'],
+    '63': ['/nurse'],
+} as const;

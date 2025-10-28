@@ -9,11 +9,17 @@ interface UserCookie {
     postitle: string;
 }
 
+
+
 const GRANT_ALL_ACCESS = false;
 const EXCLUDED_PAGES = [
+    '/auth/emr_tunnel',
+    '/development/functionTests'
+];
+
+const AUTH_PAGES = [
     '/auth/login',
     '/auth/access',
-    '/development/functionTests'
 ];
 
 const ALLOWED_PAGES = {
@@ -29,16 +35,19 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     if (GRANT_ALL_ACCESS) { // ----------------------------------------------------- 1️⃣ If GRANT_ALL_ACCESS is true then no authentication is required
         return;
     }
-
     if (EXCLUDED_PAGES.includes(to.path)) { // ------------------------------------- 2️⃣ If the page being accessed IS PART of excluded pages
-        return handleExcludedPage(to);
+        return;
+    }
+
+    if (AUTH_PAGES.includes(to.path)) { // ------------------------------------- 2️⃣ If the page being accessed IS PART of excluded pages
+        return handleAuthPages(to);
     }
 
     return handleProtectedPage(to); // --------------------------------------------- 3️⃣ If the page being accessed IS NOT PART of excluded pages
 
 });
 
-function handleExcludedPage(to: { path: string }) {
+function handleAuthPages(to: { path: string }) {
     const authToken = useCookie('authToken').value;
 
     if (!authToken) { // ------------------------------------------------------------ 1️⃣ If user is not logged in: no authentication is required

@@ -145,7 +145,6 @@ const onClickSubmit = () => {
     if (isValid) {
         submitForm();
     } else {
-        console.log('Errors:', errors);
         toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill in all required fields.' , life: 3000});
     }
 }
@@ -257,7 +256,6 @@ const onClickSubmitDraft = async () => {
 }
 
 const computeNutrients = () => {
-    console.log('Computing Nutrients...');
     const age = Number(props.age);
 
     if (age && age < 19) {
@@ -677,8 +675,8 @@ onBeforeUnmount(() => {
                 <section class="flex flex-col">
                 <Divider align="left" type="dashed">
                     <div  class="flex items-center gap-2">
-                    <Icon name="fluent:number-circle-7-16-filled" class="text-2xl" />
-                    <label class="font-bold">Other Remarks</label>
+                        <Icon name="fluent:number-circle-7-16-filled" class="text-2xl" />
+                        <label class="font-bold">Other Remarks</label>
                     </div>
                 </Divider>
                 <Textarea v-model="selected.remarks" class="mt-2 ml-10"/>
@@ -693,7 +691,7 @@ onBeforeUnmount(() => {
                         <Icon name="mdi:draft" class="text-3xl text-blue-500" />
                         <span class="text-sm"> Save as Draft </span>
                     </Button>
-                    <Button raised @click="onClickSubmit">
+                    <Button raised @click="onClickSubmit" >
                         <Icon name="mdi:content-save-move" class="text-3xl" />
                         <span class="text-sm font-bold"> Issue Diet Order </span>
                     </Button>
